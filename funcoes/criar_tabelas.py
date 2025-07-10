@@ -1,0 +1,22 @@
+import sqlite3
+
+conexao = sqlite3.connect('./db/Geai.db')
+cursor = conexao.cursor()
+cursor.execute(
+    """
+        CREATE TABLE Agentes (
+        matricula INTEGER NOT NULL PRIMARY KEY,
+        nome TEXT NOT NULL,
+        nome_guerra TEXT NOT NULL,
+        cargo TEXT NOT NULL,
+        quadro TEXT NOT NULL,
+        setor TEXT NOT NULL,
+        funcao TEXT NOT NULL,
+        situacao TEXT NOT NULL,
+        disponibilidade TEXT NOT NULL,
+        codigo_agente TEXT NOT NULL,
+        data_cadastro TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+    """
+)
+cursor.close()

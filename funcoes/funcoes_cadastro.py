@@ -1,26 +1,13 @@
 import sqlite3
 import streamlit as st
 
+def conectardb():
+    conexao = sqlite3.connect('./db/Geai.db')
+    return conexao
+
+
 #Criar Banco de Dados e tabelas
-conexao = sqlite3.connect('./db/Geai.db')
-cursor = conexao.cursor()
-cursor.execute(
-    """
-        CREATE TABLE Agentes (
-        matricula INTEGER NOT NULL PRIMARY KEY,
-        nome TEXT NOT NULL,
-        nome_guerra TEXT NOT NULL,
-        cargo TEXT NOT NULL,
-        quadro TEXT NOT NULL,
-        setor TEXT NOT NULL,
-        funcao TEXT NOT NULL,
-        situacao TEXT NOT NULL,
-        disponibilidade TEXT NOT NULL,
-        data_cadastro TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-    """
-)
-cursor.close()
+
 
 def inserir_agente(
         matricula,
@@ -31,9 +18,12 @@ def inserir_agente(
         setor,
         funcao,
         situacao,
-        disponibilidade
+        disponibilidade,
+        codigo_agente
 ):
     try:
+        conexao = conectardb()
+        cursor = conexao.cursor()
         cursor.execute(
             """
                 INSERT INTO Agentes(
@@ -45,10 +35,11 @@ def inserir_agente(
                     setor,
                     funcao,
                     situacao,
-                    disponibilidade
+                    disponibilidade,
+                    codigo_agente
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade, codigo_agente)
         )
         conexao.commit()
         st.success('Agente cadastrado com sucesso')
