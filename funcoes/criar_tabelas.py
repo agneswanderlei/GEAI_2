@@ -15,6 +15,7 @@ cursor.execute(
         situacao TEXT NOT NULL,
         disponibilidade TEXT NOT NULL,
         codigo_agente TEXT NOT NULL,
+        observacao TEXT NOT NULL,
         data_cadastro TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
     """

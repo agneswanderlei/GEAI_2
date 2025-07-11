@@ -19,7 +19,8 @@ def inserir_agente(
         funcao,
         situacao,
         disponibilidade,
-        codigo_agente
+        codigo_agente,
+        observacao
 ):
     try:
         conexao = conectardb()
@@ -36,10 +37,11 @@ def inserir_agente(
                     funcao,
                     situacao,
                     disponibilidade,
-                    codigo_agente
+                    codigo_agente,
+                    observacao
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade, codigo_agente)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade, codigo_agente, observacao)
         )
         conexao.commit()
         st.success('Agente cadastrado com sucesso')
