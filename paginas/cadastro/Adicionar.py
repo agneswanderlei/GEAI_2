@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from funcoes.funcoes_cadastro import inserir_agente, conectardb
 import time
 import sqlite3
+from datetime import datetime
 
 # definição de vagas
 vagas_oficiais = 52
@@ -45,15 +46,18 @@ with col4:
 st.markdown('<hr></hr>',unsafe_allow_html=True)
 
 # Formulario do Cadastro de Agentes
-with st.form('Cadastro de Agentes', clear_on_submit=False):
+if "matricula" not in st.session_state:
+    st.session_state.matricula = ''
+with st.form('Cadastro de Agentes', clear_on_submit=True):
     col1, col2, col3 = st.columns([1,2,1])
-    col4, col5, col6, col7 = st.columns(4)
+    col4, col5, col6 = st.columns(3)
+    col7, col8, col9 = st.columns(3)
     with col1:
-        matricula = st.text_input('Matricula')
+        matricula = st.text_input('Matricula', key='matricula')
     with col2:
-        nome = st.text_input('Nome')
+        nome = st.text_input('Nome', key='nome')
     with col3:
-        nome_guerra = st.text_input('Nome de Guerra')
+        nome_guerra = st.text_input('Nome de Guerra', key='nome_guerra')
     with col4:
         cargo = st.selectbox('Cargo', [
             '',
@@ -69,7 +73,7 @@ with st.form('Cadastro de Agentes', clear_on_submit=False):
             '3º SGT',
             'CB',
             'SD',
-        ])
+        ], key='cargo')
     with col5:
         quadro = st.selectbox('Quadro',
             [
@@ -77,7 +81,7 @@ with st.form('Cadastro de Agentes', clear_on_submit=False):
                 'QOPM',
                 'QOAPM',
                 'QPMG'
-            ]
+            ],key='quadro'
         )
     with col6:
         setor = st.selectbox('Setor', [
@@ -134,7 +138,7 @@ with st.form('Cadastro de Agentes', clear_on_submit=False):
             'ASI-22 / 4ª CIPM',
             'ASI-25 / 7ª CIPM'
 
-        ])
+        ],key='setor')
     with col7:
         funcao = st.selectbox('Função',[
             '',
@@ -148,16 +152,30 @@ with st.form('Cadastro de Agentes', clear_on_submit=False):
             'MOTORISTA',
             'PERMANÊNCIA',
             'SECRETÁRIA'
-        ])
-    observacao = st.text_area('Observações',height=200)
-
+        ],key='funcao')
+    with col8:
+        disponibilidade = st.selectbox('Disponibilidade',[
+            '',
+            'DISPONÍVEL',
+            'INDISPONÍVEL',
+            'AGUARDANDO PUBLICAÇÃO'
+        ],key='disponibilidade')
+    with col9:
+        situacao = st.selectbox('Situação',[
+            '',
+            'ATIVO',
+            'INATIVO'
+        ], key='situacao')
+    observacao = st.text_area('Observações',height=200, key='observacao')
+    codigo_agente = 0
+    data_cadastro = datetime.now()
     submite = st.form_submit_button('Salvar')
     if submite:
-        if matricula == '':
+        if matricula.strip() == '':
             st.toast('Por favor digite a Matricula!', icon='⚠️')
-        if nome == '':
+        if nome.strip() == '':
             st.toast('Por favor digite um Nome!', icon='⚠️')
-        if nome_guerra == '':
+        if nome_guerra.strip() == '':
             st.toast('Por favor digite um Nome de Guerra!', icon='⚠️')
         if cargo == '':
             st.toast('Por favor selecione um Cargo!', icon='⚠️')
@@ -166,4 +184,25 @@ with st.form('Cadastro de Agentes', clear_on_submit=False):
         if setor == '':
             st.toast('Por favor selecione um Setor!',icon='⚠️')
         if funcao == '':
-            st.toast('Por favor selecione um Função!',icon='⚠️')
+            st.toast('Por favor selecione uma Função!',icon='⚠️')
+        if disponibilidade == '':
+            st.toast('Por favor selecione uma Disponibilidade!',icon='⚠️')
+        if situacao == '':
+            st.toast('Por favor selecione uma Situacao!',icon='⚠️')
+        if matricula != '' and nome != '' and nome_guerra != '' and cargo != '' and quadro != '' and setor != '' and funcao != '' and disponibilidade != '' and situacao != '':
+            inserir_agente(
+                matricula,
+                nome,
+                nome_guerra,
+                cargo,
+                quadro,
+                setor,
+                funcao,
+                situacao,
+                disponibilidade,
+                codigo_agente,
+                observacao,
+                data_cadastro
+            )
+            time.sleep(1)
+            st.rerun()
