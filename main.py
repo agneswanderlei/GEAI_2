@@ -1,10 +1,10 @@
 import streamlit as st
 st.title('Bem vindo ao Controle de GEAI')
 pages = {
-    'Cadastro': [
+    'Agentes': [
+        'paginas\cadastro\Visualizar.py',
         'paginas\cadastro\Adicionar.py',
         'paginas\cadastro\Editar.py',
-        'paginas\cadastro\Visualizar.py',
         'paginas\cadastro\Excluir.py'
     ],
     'Relatórios': [

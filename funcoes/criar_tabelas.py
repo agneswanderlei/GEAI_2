@@ -1,10 +1,10 @@
 import sqlite3
 
-conexao = sqlite3.connect('./db/Geai.db')
-cursor = conexao.cursor()
+conn = sqlite3.connect('./db/Geai.db')
+cursor = conn.cursor()
 cursor.execute(
     """
-        CREATE TABLE Agentes (
+        CREATE TABLE IF NOT EXISTS Agentes (
         matricula INTEGER NOT NULL PRIMARY KEY,
         nome TEXT NOT NULL,
         nome_guerra TEXT NOT NULL,
@@ -20,4 +20,5 @@ cursor.execute(
         );
     """
 )
-cursor.close()
+conn.commit()
+conn.close()
