@@ -69,7 +69,7 @@ def inserir_agente(
 def buscar_dados(matricula):
     conn = conectardb()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Agentes WHERE matricula = ?",(matricula)) # isso serve para buscar na tabela o agente que a matricula for passada.
+    cursor.execute("SELECT * FROM Agentes WHERE matricula = ?",(matricula,)) # isso serve para buscar na tabela o agente que a matricula for passada.
     resultado = cursor.fetchone()
     conn.close()
     return resultado
@@ -85,7 +85,6 @@ def atualizar_agente(matricula, nome, nome_guerra, cargo, quadro, setor, funcao,
     conn.commit()
     conn.close()
 def atualizar_cadastro(
-        matricula,
         nome,
         nome_guerra,
         cargo,
@@ -101,9 +100,8 @@ def atualizar_cadastro(
     conn = conectardb()
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE Agentes SET matricula = ?, nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, disponibilidade = ?, codigo_agente = ?, obervacao = ? 
+        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, disponibilidade = ?, codigo_agente = ?, observacao = ? 
     """,(
-        matricula,
         nome,
         nome_guerra,
         cargo,
@@ -115,4 +113,6 @@ def atualizar_cadastro(
         codigo_agente,
         observacao,
     ))
+    conn.commit()
+    conn.close()
 
