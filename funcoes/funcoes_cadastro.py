@@ -70,7 +70,7 @@ def buscar_dados(matricula):
     conn = conectardb()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Agentes WHERE matricula = ?",(matricula)) # isso serve para buscar na tabela o agente que a matricula for passada.
-    resultado = cursor.fetchall()
+    resultado = cursor.fetchone()
     conn.close()
     return resultado
 
