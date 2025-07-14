@@ -84,6 +84,7 @@ def atualizar_agente(matricula, nome, nome_guerra, cargo, quadro, setor, funcao,
     """, (nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade, codigo_agente, observacao, matricula))
     conn.commit()
     conn.close()
+
 def atualizar_cadastro(
         nome,
         nome_guerra,
@@ -95,12 +96,13 @@ def atualizar_cadastro(
         disponibilidade,
         codigo_agente,
         observacao,
+        matricula,
 
 ):
     conn = conectardb()
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, disponibilidade = ?, codigo_agente = ?, observacao = ? 
+        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, disponibilidade = ?, codigo_agente = ?, observacao = ? WHERE matricula =?
     """,(
         nome,
         nome_guerra,
@@ -112,6 +114,7 @@ def atualizar_cadastro(
         disponibilidade,
         codigo_agente,
         observacao,
+        matricula,
     ))
     conn.commit()
     conn.close()

@@ -3,7 +3,7 @@ import os, sys
 import time
 import sqlite3
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from funcoes.funcoes_cadastro import buscar_dados, atualizar_cadastro
+from funcoes.funcoes_cadastro import buscar_dados, atualizar_cadastro,conectardb
 
 options_cargo = [
     '',
@@ -115,7 +115,6 @@ options_disponibilidade = [
 ]
 
 
-
 def listar_policiais():
     conn = sqlite3.connect('./db/Geai.db')
     cursor = conn.cursor()
@@ -128,8 +127,13 @@ def listar_policiais():
 st.subheader("🔍 Buscar Agente por Matrícula")
 policiais = listar_policiais()
 ids = [p[0] for p in policiais]
-id_selecionado = st.selectbox('Matricula', ids)   
+
+if 'matricula_default' not in st.session_state:
+    st.session_state['matricula_default'] = ids[0]
+
+id_selecionado = st.selectbox('Matricula', ids, index=ids.index(st.session_state['matricula_default']))
 policial = next((p for p in policiais if p[0] == id_selecionado), None)
+
 
 # formulário
 st.markdown('<hr></hr>', unsafe_allow_html=True)
@@ -137,7 +141,7 @@ col1, col2, col3 = st.columns([1,2,1])
 col4, col5, col6 = st.columns(3)
 col7, col8, col9 = st.columns([1,1,2])
 with col1:
-    matricula = st.text_input('Matricula', key='matricula',value=policial[0],disabled=True)
+    matricula = st.text_input('Matricula', key='matricula2',value=policial[0],disabled=True)
 with col2:
     nome = st.text_input('Nome',value=policial[1],key='nome')
 with col3:
@@ -193,17 +197,20 @@ if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == ''
 codigo_agente = 0
 atualiar = st.button('Atualizar',disabled=botao_habilitado)
 if atualiar:
-    # atualizar_cadastro(
-    #     nome,
-    #     nome_guerra,
-    #     cargo,
-    #     quadro,
-    #     setor,
-    #     funcao,
-    #     situacao,
-    #     disponibilidade,
-    #     codigo_agente,
-    #     observacao,
-    # )
-    st.rerun()
+    atualizar_cadastro(
+        nome,
+        nome_guerra,
+        cargo,
+        quadro,
+        setor,
+        funcao,
+        situacao,
+        disponibilidade,
+        codigo_agente,
+        observacao,
+        matricula
+    )
     st.toast('✅ Agente atualizado com sucesso!')
+    st.session_state['matricula_default'] = ids[0]  # Define como primeira matrícula
+    time.sleep(1)
+    st.switch_page("paginas\cadastro\Visualizar.py")
