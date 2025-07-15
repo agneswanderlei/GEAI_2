@@ -225,4 +225,5 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
                 data_cadastro
             )
             time.sleep(1)
+            st.switch_page('paginas\cadastro\Visualizar.py')
             st.rerun()

@@ -64,6 +64,7 @@ def inserir_agente(
     except Exception as e:
         st.error(f' Error ao cadastrar agente {e}')
     finally:
+        conexao.commit()
         conexao.close()
 
 def buscar_dados(matricula):
