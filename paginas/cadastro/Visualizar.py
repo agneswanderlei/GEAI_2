@@ -5,18 +5,25 @@ import sqlite3
 
 # definição de vagas
 vagas_oficiais = 52
+oficiais_cadastrados = 0
 vagas_oficiais_preenchidas = 0
 vagas_pracas = 352
+pracas_cadastrados = 0
 vagas_pracas_preenchidas = 0
 
 # consulta dados daas vagas na tabela
 cursor = sqlite3.connect('./db/Geai.db').cursor()
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
+cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
+oficiais_cadastrados = cursor.fetchall()[0][0]
+
+cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
+pracas_cadastrados = cursor.fetchall()[0][0]
+
+cursor.execute("SELECT COUNT(*) FROM Agentes WHERE situacao_agente = 'EFETIVADO' AND cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
 vagas_oficiais_preenchidas = cursor.fetchall()[0][0]
 
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
+cursor.execute("SELECT COUNT(*) FROM Agentes WHERE situacao_agente = 'EFETIVADO' AND cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
 vagas_pracas_preenchidas = cursor.fetchall()[0][0]
-
 # Estilos dos cards
 def card(titulo, valor, cor='#f0f2f6'):
     st.markdown(
@@ -27,17 +34,20 @@ def card(titulo, valor, cor='#f0f2f6'):
         </div>
         """, unsafe_allow_html=True
     )
-st.header('Visualizar Agentes Cadastrados.')
+
 # Layout cards
-col1, col2, col3, col4 = st.columns(4)
-
+col1, col2, col3 = st.columns(3)
+col4, col5, col6 = st.columns(3)
 with col1:
-    card('Vagas Oficias', vagas_oficiais,'#0d6efd')
+    card('Vagas de Oficias', vagas_oficiais,'#0d6efd')
 with col2:
-    card('Vagas Preenchidas', vagas_oficiais_preenchidas,'#198754')
+    card('Oficiais Cadastrado', oficiais_cadastrados,'#dc3545')
 with col3:
-    card('Vagas Praças', vagas_pracas,'#ffc107')
+    card('Vagas Preenchidas', vagas_oficiais_preenchidas,'#198754')
 with col4:
-    card('Vagas Preenchidas', vagas_pracas_preenchidas,'#dc3545')
-
+    card('Vagas de Praças', vagas_pracas,'#0d6efd')
+with col5:
+    card('Praças Cadastrados', pracas_cadastrados,'#dc3545')
+with col6:
+    card('Vagas Preenchidas', vagas_pracas_preenchidas,'#198754')
 st.markdown('<hr></hr>',unsafe_allow_html=True)

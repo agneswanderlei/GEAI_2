@@ -6,55 +6,7 @@ import time
 import sqlite3
 from datetime import datetime
 
-# definição de vagas
-vagas_oficiais = 52
-oficiais_cadastrados = 0
-vagas_oficiais_preenchidas = 0
-vagas_pracas = 352
-pracas_cadastrados = 0
-vagas_pracas_preenchidas = 0
-
-# consulta dados daas vagas na tabela
-cursor = sqlite3.connect('./db/Geai.db').cursor()
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
-oficiais_cadastrados = cursor.fetchall()[0][0]
-
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
-pracas_cadastrados = cursor.fetchall()[0][0]
-
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE disponibilidade = 'DISPONÍVEL' AND situacao NOT IN ('DESCREDENCIADO', 'LIC. ESPECIAL', 'LIC. MATERNIDADE', 'LIC. TRAT. INT. PART.', 'LIC. TRAT. SAÚDE', 'CREDENCIADO') AND cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
-vagas_oficiais_preenchidas = cursor.fetchall()[0][0]
-
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE disponibilidade = 'DISPONÍVEL' AND situacao NOT IN ('DESCREDENCIADO', 'LIC. ESPECIAL', 'LIC. MATERNIDADE', 'LIC. TRAT. INT. PART.', 'LIC. TRAT. SAÚDE', 'CREDENCIADO') AND cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
-vagas_pracas_preenchidas = cursor.fetchall()[0][0]
-# Estilos dos cards
-def card(titulo, valor, cor='#f0f2f6'):
-    st.markdown(
-        f"""
-        <div style="background-color:{cor}; padding:0px; border-radius:10px; text-align:center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-            <h6 style="margin-bottom: 5px;">{titulo}</h6>
-            <p style="margin-top: 0;">{valor}</p>
-        </div>
-        """, unsafe_allow_html=True
-    )
-
-# Layout cards
-col1, col2, col3 = st.columns(3)
-col4, col5, col6 = st.columns(3)
-with col1:
-    card('Vagas de Oficias', vagas_oficiais,'#0d6efd')
-with col2:
-    card('Oficiais Cadastrado', oficiais_cadastrados,'#dc3545')
-with col3:
-    card('Vagas Preenchidas', vagas_oficiais_preenchidas,'#198754')
-with col4:
-    card('Vagas de Praças', vagas_pracas,'#0d6efd')
-with col5:
-    card('Praças Cadastrados', pracas_cadastrados,'#dc3545')
-with col6:
-    card('Vagas Preenchidas', vagas_pracas_preenchidas,'#198754')
-st.markdown('<hr></hr>',unsafe_allow_html=True)
-
+st.header('Adicionar Agentes',width='content')
 # Formulario do Cadastro de Agentes
 if "matricula" not in st.session_state:
     st.session_state.matricula = ''
@@ -164,19 +116,18 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
             'SECRETÁRIA'
         ],key='funcao')
     with col8:
-        disponibilidade = st.selectbox('Disponibilidade',[
+        situacao_agente = st.selectbox('Situaçao do Agente',[
             '',
-            'DISPONÍVEL',
-            'INDISPONÍVEL',
-        ],key='disponibilidade')
+            'CADASTRADO',
+            'CREDENCIADO',
+            'DESCADASTRADO',
+            'EFETIVADO',
+        ],key='situacao_agente')
     with col9:
         situacao = st.selectbox('Situação',[
             '',
             'AGUAR. REG. EM SP',
             'AGUAR. RR',
-            'CREDENCIADO',
-            'DESCREDENCIADO',
-            'EFETIVADO',
             'FÉRIAS',
             'LIC. ESPECIAL',
             'LIC. MATERNIDADE',
@@ -189,6 +140,11 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
     observacao = st.text_area('Observações',height=200, key='observacao')
     codigo_agente = 0
     data_cadastro = datetime.now()
+    def limpar_matricula(matricula):
+        return matricula.replace('-','').strip()
+    matricula = limpar_matricula(matricula)
+    nome = nome.upper()
+    nome_guerra = nome_guerra.upper()
     submite = st.form_submit_button('Salvar')
     if submite:
         if matricula.strip() == '':
@@ -205,11 +161,9 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
             st.toast('Por favor selecione um Setor!',icon='⚠️')
         if funcao == '':
             st.toast('Por favor selecione uma Função!',icon='⚠️')
-        if disponibilidade == '':
-            st.toast('Por favor selecione uma Disponibilidade!',icon='⚠️')
-        if situacao == '':
-            st.toast('Por favor selecione uma Situacao!',icon='⚠️')
-        if matricula != '' and nome != '' and nome_guerra != '' and cargo != '' and quadro != '' and setor != '' and funcao != '' and disponibilidade != '' and situacao != '':
+        if situacao_agente == '':
+            st.toast('Por favor selecione uma Situação do Agente!',icon='⚠️')
+        if matricula != '' and nome != '' and nome_guerra != '' and cargo != '' and quadro != '' and setor != '' and funcao != '' and situacao_agente != '':
             inserir_agente(
                 matricula,
                 nome,
@@ -219,11 +173,8 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
                 setor,
                 funcao,
                 situacao,
-                disponibilidade,
+                situacao_agente,
                 codigo_agente,
                 observacao,
                 data_cadastro
             )
-            time.sleep(1)
-            st.switch_page('paginas\cadastro\Visualizar.py')
-            st.rerun()

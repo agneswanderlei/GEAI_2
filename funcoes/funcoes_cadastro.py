@@ -1,5 +1,6 @@
 import sqlite3
 import streamlit as st
+import time
 
 def conectardb():
     conexao = sqlite3.connect('./db/Geai.db')
@@ -18,7 +19,7 @@ def inserir_agente(
         setor,
         funcao,
         situacao,
-        disponibilidade,
+        situacao_agente,
         codigo_agente,
         observacao,
         data_cadastro
@@ -37,7 +38,7 @@ def inserir_agente(
                     setor,
                     funcao,
                     situacao,
-                    disponibilidade,
+                    situacao_agente,
                     codigo_agente,
                     observacao,
                     data_cadastro
@@ -51,7 +52,7 @@ def inserir_agente(
                 setor,
                 funcao,
                 situacao,
-                disponibilidade,
+                situacao_agente,
                 codigo_agente,
                 observacao,
                 data_cadastro
@@ -59,8 +60,11 @@ def inserir_agente(
         )
         conexao.commit()
         st.success('Agente cadastrado com sucesso')
+        time.sleep(1)
+        st.switch_page('paginas\cadastro\Visualizar.py')
     except sqlite3.IntegrityError:
         st.error(f'A matrícula {matricula} já está cadastrada!')
+        st.error('Não é permitido matriculas com hifens!')
     except Exception as e:
         st.error(f' Error ao cadastrar agente {e}')
     finally:
@@ -75,14 +79,14 @@ def buscar_dados(matricula):
     conn.close()
     return resultado
 
-def atualizar_agente(matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade, codigo_agente, observacao):
+def atualizar_agente(matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, situacao_agente, codigo_agente, observacao):
     conn = conectardb()
     cursor = conn.cursor()
     cursor.execute("""
         UPDATE Agentes
-        SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, disponibilidade = ?, codigo_agente = ?, observacao = ?
+        SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, situacao_agente = ?, codigo_agente = ?, observacao = ?
         WHERE matricula = ?
-    """, (nome, nome_guerra, cargo, quadro, setor, funcao, situacao, disponibilidade, codigo_agente, observacao, matricula))
+    """, (nome, nome_guerra, cargo, quadro, setor, funcao, situacao, situacao_agente, codigo_agente, observacao, matricula))
     conn.commit()
     conn.close()
 
@@ -94,7 +98,7 @@ def atualizar_cadastro(
         setor,
         funcao,
         situacao,
-        disponibilidade,
+        situacao_agente,
         codigo_agente,
         observacao,
         matricula,
@@ -103,7 +107,7 @@ def atualizar_cadastro(
     conn = conectardb()
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, disponibilidade = ?, codigo_agente = ?, observacao = ? WHERE matricula =?
+        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, situacao_agente = ?, codigo_agente = ?, observacao = ? WHERE matricula =?
     """,(
         nome,
         nome_guerra,
@@ -112,7 +116,7 @@ def atualizar_cadastro(
         setor,
         funcao,
         situacao,
-        disponibilidade,
+        situacao_agente,
         codigo_agente,
         observacao,
         matricula,

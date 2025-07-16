@@ -97,9 +97,6 @@ options_situacao = [
     '',
     'AGUAR. REG. EM SP',
     'AGUAR. RR',
-    'CREDENCIADO',
-    'DESCREDENCIADO',
-    'EFETIVADO',
     'FÉRIAS',
     'LIC. ESPECIAL',
     'LIC. MATERNIDADE',
@@ -108,10 +105,12 @@ options_situacao = [
     'LIC. TRAT. SAÚDE',
     'REST. TRAT. SAÚDE',
 ]
-options_disponibilidade = [
+options_situacao_agente = [
     '',
-    'DISPONÍVEL',
-    'INDISPONÍVEL',
+    'CADASTRADO',
+    'CREDENCIADO',
+    'DESCADASTRADO',
+    'EFETIVADO',
 ]
 
 
@@ -175,11 +174,11 @@ with col7:
         key='funcao'
     )
 with col8:
-    disponibilidade = st.selectbox(
-        'Disponibilidade',
-        options_disponibilidade,
-        index=options_disponibilidade.index(policial[8]),
-        key='disponibilidade'
+    situacao_agente = st.selectbox(
+        'Situacao do Agente',
+        options_situacao_agente,
+        index=options_situacao_agente.index(policial[8]),
+        key='situacao_agente'
     )
 with col9:
     situacao = st.selectbox(
@@ -191,7 +190,7 @@ with col9:
 observacao = st.text_area('Observação', value=policial[10], height=200, key='observacao')
 
 botao_habilitado = False
-if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or disponibilidade == '' or situacao == '' or observacao == '':
+if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or situacao_agente == '' or situacao == '' or observacao == '':
     botao_habilitado = True
     st.warning('Todos os campos devem ser preenchidos!',icon='⚠️')
 codigo_agente = 0
@@ -205,7 +204,7 @@ if atualiar:
         setor,
         funcao,
         situacao,
-        disponibilidade,
+        situacao_agente,
         codigo_agente,
         observacao,
         matricula

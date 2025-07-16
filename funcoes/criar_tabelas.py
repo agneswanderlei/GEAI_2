@@ -5,7 +5,7 @@ cursor = conn.cursor()
 cursor.execute(
     """
         CREATE TABLE IF NOT EXISTS Agentes (
-        matricula TEXT NOT NULL PRIMARY KEY,
+        matricula INTEGER NOT NULL PRIMARY KEY,
         nome TEXT NOT NULL,
         nome_guerra TEXT NOT NULL,
         cargo TEXT NOT NULL,
@@ -13,7 +13,7 @@ cursor.execute(
         setor TEXT NOT NULL,
         funcao TEXT NOT NULL,
         situacao TEXT NOT NULL,
-        disponibilidade TEXT NOT NULL,
+        situacao_agente TEXT NOT NULL,
         codigo_agente TEXT NOT NULL,
         observacao TEXT NOT NULL,
         data_cadastro TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
