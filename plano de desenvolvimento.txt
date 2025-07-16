@@ -1,2 +1,3 @@
 16/07 - Página excluir ok!
 16/07 - Parei na parte de como selecionar as colunas que quero mostrar na tabela.
+16/07 - Consegui colocar os nomes das colunas e escolher quais colunas eu quero mostrar. agora vou criar os botoes para filtrar

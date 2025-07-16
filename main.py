@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config('Menu',layout='wide')
 st.title('Controle de GEAIS',anchor=False,)
 pages = {
     'Agentes': [
