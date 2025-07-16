@@ -1,5 +1,5 @@
 import streamlit as st
-st.title('Bem vindo ao Controle de GEAI')
+st.title('Controle de GEAIS',anchor=False,)
 pages = {
     'Agentes': [
         'paginas\cadastro\Visualizar.py',

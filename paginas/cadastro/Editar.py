@@ -123,14 +123,13 @@ def listar_policiais():
     return data
 
 # Campo para digitar matrícula e botão de busca
-st.subheader("🔍 Buscar Agente por Matrícula")
+st.header('Editar Agentes')
 policiais = listar_policiais()
 ids = [p[0] for p in policiais]
 
-if 'matricula_default' not in st.session_state:
-    st.session_state['matricula_default'] = ids[0]
 
-id_selecionado = st.selectbox('Matricula', ids, index=ids.index(st.session_state['matricula_default']))
+
+id_selecionado = st.selectbox('Matricula', ids,help='"🔍 Buscar Agente por Matrícula"', placeholder='Digite a matricula.')
 policial = next((p for p in policiais if p[0] == id_selecionado), None)
 
 
@@ -188,9 +187,11 @@ with col9:
         key='situacao'
     )
 observacao = st.text_area('Observação', value=policial[10], height=200, key='observacao')
+nome = nome.upper()
+nome_guerra = nome_guerra.upper()
 
 botao_habilitado = False
-if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or situacao_agente == '' or situacao == '' or observacao == '':
+if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or situacao_agente == '':
     botao_habilitado = True
     st.warning('Todos os campos devem ser preenchidos!',icon='⚠️')
 codigo_agente = 0

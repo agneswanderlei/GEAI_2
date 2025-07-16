@@ -2,6 +2,7 @@ import streamlit as st
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import sqlite3
+import pandas as pd
 
 # definição de vagas
 vagas_oficiais = 52
@@ -10,6 +11,15 @@ vagas_oficiais_preenchidas = 0
 vagas_pracas = 352
 pracas_cadastrados = 0
 vagas_pracas_preenchidas = 0
+
+def buscar_agentes():
+    conn = sqlite3.connect('./db/Geai.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Agentes")
+    colunas = [desc[0] for desc in cursor.description] # nome das colunas
+    policiais = cursor.fetchall()
+    conn.close()
+    return pd.DataFrame(policiais,columns=colunas)
 
 # consulta dados daas vagas na tabela
 cursor = sqlite3.connect('./db/Geai.db').cursor()
@@ -51,3 +61,5 @@ with col5:
 with col6:
     card('Vagas Preenchidas', vagas_pracas_preenchidas,'#198754')
 st.markdown('<hr></hr>',unsafe_allow_html=True)
+policiais = buscar_agentes()
+st.dataframe(policiais, use_container_width=True)
