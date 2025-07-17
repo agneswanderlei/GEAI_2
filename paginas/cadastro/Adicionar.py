@@ -6,21 +6,27 @@ import time
 import sqlite3
 from datetime import datetime
 
+
 st.header('Adicionar Agentes',width='content')
 # Formulario do Cadastro de Agentes
 if "matricula" not in st.session_state:
     st.session_state.matricula = ''
 with st.form('Cadastro de Agentes', clear_on_submit=True):
-    col1, col2, col3 = st.columns([1,2,1])
-    col4, col5, col6 = st.columns(3)
-    col7, col8, col9 = st.columns([1,1,2])
+    col1, col2, col3, col4, col5 = st.columns([1,1,1,3,1])
+    col6, col7, col8 = st.columns(3)
+    col9, col10, col11 = st.columns([1,1,2])
+
     with col1:
-        matricula = st.text_input('Matricula', key='matricula')
+        data_form = st.date_input('Data do Formulário', key='data_form',value=datetime.now())
     with col2:
-        nome = st.text_input('Nome', key='nome')
+        num_form = st.text_input('Nº do Formulário', key='num_form')
     with col3:
-        nome_guerra = st.text_input('Nome de Guerra', key='nome_guerra')
+        matricula = st.text_input('Matricula', key='matricula')
     with col4:
+        nome = st.text_input('Nome', key='nome')
+    with col5:
+        nome_guerra = st.text_input('Nome de Guerra', key='nome_guerra')
+    with col6:
         cargo = st.selectbox('Cargo', [
             '',
             'CEL',
@@ -36,7 +42,7 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
             'CB',
             'SD',
         ], key='cargo')
-    with col5:
+    with col7:
         quadro = st.selectbox('Quadro',
             [
                 '',
@@ -45,7 +51,7 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
                 'QPMG'
             ],key='quadro'
         )
-    with col6:
+    with col8:
         setor = st.selectbox('Setor', [
             '',
             'CHEFIA',
@@ -101,7 +107,7 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
             'ASI-25 / 7ª CIPM'
 
         ],key='setor')
-    with col7:
+    with col9:
         funcao = st.selectbox('Função',[
             '',
             'ADJUNTO',
@@ -115,30 +121,28 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
             'PERMANÊNCIA',
             'SECRETÁRIA'
         ],key='funcao')
-    with col8:
+    with col10:
         situacao_agente = st.selectbox('Situaçao do Agente',[
             '',
+            'APROVADO',
             'CADASTRADO',
             'CREDENCIADO',
-            'DESCADASTRADO',
-            'EFETIVADO',
+            'DESCREDENCIADO',
+            'FORMULÁRIO PRENCHIDO',
+            'RECEBENDO GEAI',
         ],key='situacao_agente')
-    with col9:
+    with col11:
         situacao = st.selectbox('Situação',[
             '',
-            'AGUAR. REG. EM SP',
             'AGUAR. RR',
-            'FÉRIAS',
             'LIC. ESPECIAL',
             'LIC. MATERNIDADE',
             'LIC. PATERNIDADE',
             'LIC. TRAT. INT. PART.',
             'LIC. TRAT. SAÚDE',
-            'REST. TRAT. SAÚDE',
-
         ], key='situacao')
     observacao = st.text_area('Observações',height=200, key='observacao')
-    codigo_agente = 0
+    
     data_cadastro = datetime.now()
     def limpar_matricula(matricula):
         return matricula.replace('-','').strip()
@@ -164,6 +168,15 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
         if situacao_agente == '':
             st.toast('Por favor selecione uma Situação do Agente!',icon='⚠️')
         if matricula != '' and nome != '' and nome_guerra != '' and cargo != '' and quadro != '' and setor != '' and funcao != '' and situacao_agente != '':
+            matricula = str(matricula)
+            quebra_nome = nome.split(' ')
+            letra1 = quebra_nome[0][0]
+            letra2 = quebra_nome[1][1]
+            letra3 = quebra_nome[-1][0]
+            letra4 = matricula[1]
+            letra5 = matricula[-2]
+            letra6 = matricula[-1]
+            codigo_agente = letra1 + letra2 + letra3 + letra4 + letra5 + letra6
             inserir_agente(
                 matricula,
                 nome,

@@ -95,22 +95,21 @@ options_funcao = [
 ]
 options_situacao = [
     '',
-    'AGUAR. REG. EM SP',
     'AGUAR. RR',
-    'FÉRIAS',
     'LIC. ESPECIAL',
     'LIC. MATERNIDADE',
     'LIC. PATERNIDADE',
     'LIC. TRAT. INT. PART.',
     'LIC. TRAT. SAÚDE',
-    'REST. TRAT. SAÚDE',
 ]
 options_situacao_agente = [
     '',
+    'APROVADO',
     'CADASTRADO',
     'CREDENCIADO',
-    'DESCADASTRADO',
-    'EFETIVADO',
+    'DESCREDENCIADO',
+    'FORMULÁRIO PRENCHIDO',
+    'RECEBENDO GEAI',
 ]
 
 
@@ -129,88 +128,91 @@ ids = [p[0] for p in policiais]
 
 
 
-id_selecionado = st.selectbox('Matricula', ids,help='"🔍 Buscar Agente por Matrícula"', placeholder='Digite a matricula.')
+id_selecionado = st.selectbox('Matricula', ids,help='"🔍 Buscar Agente por Matrícula"', placeholder='Digite a matricula.',format_func=lambda x: f'{x} - {next(p[1] for p in policiais if p[0]==x)}')
 policial = next((p for p in policiais if p[0] == id_selecionado), None)
 
 
 # formulário
 st.markdown('<hr></hr>', unsafe_allow_html=True)
-col1, col2, col3 = st.columns([1,2,1])
-col4, col5, col6 = st.columns(3)
-col7, col8, col9 = st.columns([1,1,2])
-with col1:
-    matricula = st.text_input('Matricula', key='matricula2',value=policial[0],disabled=True)
-with col2:
-    nome = st.text_input('Nome',value=policial[1],key='nome')
-with col3:
-    nome_guerra = st.text_input('Nome de Guerra',value=policial[2], key='nome_guerra')
-with col4:
-    cargo = st.selectbox(
-        'Cargo',
-        options_cargo,
-        key='cargo',
-        index=options_cargo.index(policial[3])
-    )
-with col5:
-    quadro = st.selectbox(
-        'Quadro',
-        options_quadro,
-        index=options_quadro.index(policial[4]),
-        key='quadro'
-    )
-with col6:
-    setor = st.selectbox(
-        'Setor',
-        options_setor,
-        index=options_setor.index(policial[5]),
-        key='setor'
-    )
-with col7:
-    funcao = st.selectbox(
-        'Função',
-        options_funcao,
-        index=options_funcao.index(policial[6]),
-        key='funcao'
-    )
-with col8:
-    situacao_agente = st.selectbox(
-        'Situacao do Agente',
-        options_situacao_agente,
-        index=options_situacao_agente.index(policial[8]),
-        key='situacao_agente'
-    )
-with col9:
-    situacao = st.selectbox(
-        'Situação',
-        options_situacao,
-        index=options_situacao.index(policial[7]),
-        key='situacao'
-    )
-observacao = st.text_area('Observação', value=policial[10], height=200, key='observacao')
-nome = nome.upper()
-nome_guerra = nome_guerra.upper()
+if policial:
+    col1, col2, col3 = st.columns([1,2,1])
+    col4, col5, col6 = st.columns(3)
+    col7, col8, col9 = st.columns([1,1,2])
+    with col1:
+        matricula = st.text_input('Matricula', key='matricula2',value=policial[0],disabled=True)
+    with col2:
+        nome = st.text_input('Nome',value=policial[1],key='nome')
+    with col3:
+        nome_guerra = st.text_input('Nome de Guerra',value=policial[2], key='nome_guerra')
+    with col4:
+        cargo = st.selectbox(
+            'Cargo',
+            options_cargo,
+            key='cargo',
+            index=options_cargo.index(policial[3])
+        )
+    with col5:
+        quadro = st.selectbox(
+            'Quadro',
+            options_quadro,
+            index=options_quadro.index(policial[4]),
+            key='quadro'
+        )
+    with col6:
+        setor = st.selectbox(
+            'Setor',
+            options_setor,
+            index=options_setor.index(policial[5]),
+            key='setor'
+        )
+    with col7:
+        funcao = st.selectbox(
+            'Função',
+            options_funcao,
+            index=options_funcao.index(policial[6]),
+            key='funcao'
+        )
+    with col8:
+        situacao_agente = st.selectbox(
+            'Situacao do Agente',
+            options_situacao_agente,
+            index=options_situacao_agente.index(policial[8]),
+            key='situacao_agente'
+        )
+    with col9:
+        situacao = st.selectbox(
+            'Situação',
+            options_situacao,
+            index=options_situacao.index(policial[7]),
+            key='situacao'
+        )
+    observacao = st.text_area('Observação', value=policial[10], height=200, key='observacao')
+    nome = nome.upper()
+    nome_guerra = nome_guerra.upper()
 
-botao_habilitado = False
-if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or situacao_agente == '':
-    botao_habilitado = True
-    st.warning('Todos os campos devem ser preenchidos!',icon='⚠️')
-codigo_agente = 0
-atualiar = st.button('Atualizar',disabled=botao_habilitado)
-if atualiar:
-    atualizar_cadastro(
-        nome,
-        nome_guerra,
-        cargo,
-        quadro,
-        setor,
-        funcao,
-        situacao,
-        situacao_agente,
-        codigo_agente,
-        observacao,
-        matricula
-    )
-    st.toast('✅ Agente atualizado com sucesso!')
-    st.session_state['matricula_default'] = ids[0]  # Define como primeira matrícula
-    time.sleep(1)
-    st.switch_page("paginas\cadastro\Visualizar.py")
+    botao_habilitado = False
+    if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or situacao_agente == '':
+        botao_habilitado = True
+        st.warning('Todos os campos devem ser preenchidos!',icon='⚠️')
+    codigo_agente = 0
+    atualiar = st.button('Atualizar',disabled=botao_habilitado)
+    if atualiar:
+        atualizar_cadastro(
+            nome,
+            nome_guerra,
+            cargo,
+            quadro,
+            setor,
+            funcao,
+            situacao,
+            situacao_agente,
+            codigo_agente,
+            observacao,
+            matricula
+        )
+        st.toast('✅ Agente atualizado com sucesso!')
+        st.session_state['matricula_default'] = ids[0]  # Define como primeira matrícula
+        time.sleep(1)
+        st.switch_page("paginas\cadastro\Home.py")
+else:
+    st.warning('Agente não encontrado')

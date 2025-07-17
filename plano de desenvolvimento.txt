@@ -1,3 +1,5 @@
 16/07 - Página excluir ok!
 16/07 - Parei na parte de como selecionar as colunas que quero mostrar na tabela.
 16/07 - Consegui colocar os nomes das colunas e escolher quais colunas eu quero mostrar. agora vou criar os botoes para filtrar
+17/07 - terminei de colocar os filtros e o botao para exportar excel.
+parei em como colocar uma forma de não se repitir o número de formulário. 

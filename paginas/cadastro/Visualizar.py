@@ -1,72 +1,208 @@
 import streamlit as st
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import os, sys
+import time
 import sqlite3
-import pandas as pd
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from funcoes.funcoes_cadastro import buscar_dados, atualizar_cadastro,conectardb
 
-# definição de vagas
-vagas_oficiais = 52
-oficiais_cadastrados = 0
-vagas_oficiais_preenchidas = 0
-vagas_pracas = 352
-pracas_cadastrados = 0
-vagas_pracas_preenchidas = 0
+options_cargo = [
+    '',
+    'CEL',
+    'TC',
+    'MAJ',
+    'CAP',
+    '1º TEN',
+    '2º TEN',
+    'SUB TEN',
+    '1º SGT',
+    '2º SGT',
+    '3º SGT',
+    'CB',
+    'SD',
+]
+options_quadro = [
+    '',
+    'QOPM',
+    'QOAPM',
+    'QPMG'
+]
+options_setor = [
+    '',
+    'CHEFIA',
+    'ADJUNTO',
+    'SSA',
+    'NTMB',
+    'SS CSP',
+    'SS PC',
+    'NA',
+    'NO',
+    'PERMANÊNCIA',
+    'TI',  
+    'SS CCI',
+    'SS CI',
+    'CR I',
+    'CR II',
+    'CR III',
+    'NIE',
+    'ASI-7 / 1º BPM',
+    'ASI-11 / 2º BPM',
+    'ASI-19 / 3º BPM',
+    'ASI-14 / 4º BPM',
+    'ASI-26 / 5º BPM',
+    'ASI-6 / 6º BPM',
+    'ASI-24 / 7º BPM',
+    'ASI-23 / 8º BPM',
+    'ASI-18 / 9º BPM',
+    'ASI-13 / 10º BPM',
+    'ASI-5 / 11º BPM',
+    'ASI-4 / 12º BPM',
+    'ASI-2 / 13º BPM',
+    'ASI-21 / 14º BPM',
+    'ASI-1 / 16º BPM',
+    'ASI-8 / 17º BPM',
+    'ASI-10 / 18º BPM',
+    'ASI-3 / 19º BPM',
+    'ASI-9 / 20º BPM',
+    'ASI-6 / 25º BPM',
+    'ASI-8 / 26º BPM',
+    'ASI-15 / 15º BPM',
+    'ASI-12 / 21º BPM',
+    'ASI-16 / 22º BPM',
+    'ASI-17 / 24º BPM',
+    'ASI-11 / 3ª CIPM',
+    'ASI-12 / 5ª CIPM',
+    'ASI-16 / 6ª CIPM',
+    'ASI-15 / 8ª CIPM',
+    'ASI-13 / 10ª CIPM',
+    'ASI-20 / 23º BPM',
+    'ASI-22 / 1ª CIPM',
+    'ASI-25 / 2ª CIPM',
+    'ASI-22 / 4ª CIPM',
+    'ASI-25 / 7ª CIPM'
+]
+options_funcao = [
+    '',
+    'ADJUNTO',
+    'AG. DE BUSCA',
+    'ANALISTA',
+    'AUXÍLIAR ADM',
+    'CHEFE', 
+    'COORDENADOR',
+    'GRADUADO',
+    'MOTORISTA',
+    'PERMANÊNCIA',
+    'SECRETÁRIA'
+]
+options_situacao = [
+    '',
+    'AGUAR. RR',
+    'LIC. ESPECIAL',
+    'LIC. MATERNIDADE',
+    'LIC. PATERNIDADE',
+    'LIC. TRAT. INT. PART.',
+    'LIC. TRAT. SAÚDE',
+]
+options_situacao_agente = [
+    '',
+    'APROVADO',
+    'CADASTRADO',
+    'CREDENCIADO',
+    'DESCREDENCIADO',
+    'FORMULÁRIO PRENCHIDO',
+    'RECEBENDO GEAI',
+]
 
-def buscar_agentes():
+def listar_policiais():
     conn = sqlite3.connect('./db/Geai.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT matricula, nome, nome_guerra, cargo FROM Agentes")
-    colunas = [desc[0] for desc in cursor.description] # nome das colunas
-    policiais = cursor.fetchall()
+    cursor.execute('SELECT * FROM Agentes')
+    data = cursor.fetchall()
     conn.close()
-    dados = pd.DataFrame(policiais,columns=colunas)
-    dados = dados.rename(columns={
-        'matricula': 'Matricula',
-        'nome': 'Nome',
-        'nome_guerra': 'Nome de Guerra',
-        'cargo': 'Cargo'
-    })
-    return dados
+    return data
 
-# consulta dados daas vagas na tabela
-cursor = sqlite3.connect('./db/Geai.db').cursor()
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
-oficiais_cadastrados = cursor.fetchall()[0][0]
+# Campo para digitar matrícula e botão de busca
+st.header('Visualizar Agentes')
+policiais = listar_policiais()
+ids = [p[0] for p in policiais]
+id_selecionado = st.selectbox('Matricula', ids, help='"🔍 Buscar Agente por Matrícula"', placeholder='Digite a matricula.', format_func=lambda x: f'{x} - {next(p[1] for p in policiais if p[0]==x)}')
+policial = next((p for p in policiais if p[0] == id_selecionado), None)
 
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
-pracas_cadastrados = cursor.fetchall()[0][0]
 
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE situacao_agente = 'EFETIVADO' AND cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
-vagas_oficiais_preenchidas = cursor.fetchall()[0][0]
+# formulário
+st.markdown('<hr></hr>', unsafe_allow_html=True)
+if policial:
 
-cursor.execute("SELECT COUNT(*) FROM Agentes WHERE situacao_agente = 'EFETIVADO' AND cargo NOT IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN')")
-vagas_pracas_preenchidas = cursor.fetchall()[0][0]
-# Estilos dos cards
-def card(titulo, valor, cor='#f0f2f6'):
-    st.markdown(
-        f"""
-        <div style="background-color:{cor}; padding:0px; border-radius:10px; text-align:center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-            <h6 style="margin-bottom: 5px;">{titulo}</h6>
-            <p style="margin-top: 0;">{valor}</p>
-        </div>
-        """, unsafe_allow_html=True
-    )
+    col1, col2, col3 = st.columns([1,2,1])
+    col4, col5, col6 = st.columns(3)
+    col7, col8, col9, col10 = st.columns(4)
+    with col1:
+        matricula = st.text_input('Matricula', key='matricula2',value=policial[0],disabled=True)
+    with col2:
+        nome = st.text_input('Nome',value=policial[1],key='nome',disabled=True)
+    with col3:
+        nome_guerra = st.text_input('Nome de Guerra',value=policial[2], key='nome_guerra',disabled=True)
+    with col4:
+        cargo = st.selectbox(
+            'Cargo',
+            options_cargo,
+            key='cargo',
+            index=options_cargo.index(policial[3],),
+            disabled=True
+        )
+    with col5:
+        quadro = st.selectbox(
+            'Quadro',
+            options_quadro,
+            index=options_quadro.index(policial[4]),
+            key='quadro',
+            disabled=True
+        )
+    with col6:
+        setor = st.selectbox(
+            'Setor',
+            options_setor,
+            index=options_setor.index(policial[5]),
+            key='setor',
+            disabled=True
+        )
+    with col7:
+        funcao = st.selectbox(
+            'Função',
+            options_funcao,
+            index=options_funcao.index(policial[6]),
+            key='funcao',
+            disabled=True
+        )
+    with col8:
+        situacao_agente = st.selectbox(
+            'Situacao do Agente',
+            options_situacao_agente,
+            index=options_situacao_agente.index(policial[8]),
+            key='situacao_agente',
+            disabled=True
+        )
+    with col9:
+        situacao = st.selectbox(
+            'Situação',
+            options_situacao,
+            index=options_situacao.index(policial[7]),
+            key='situacao',
+            disabled=True
+        )
+    with col10:
+        codigo_agente = st.text_input(
+            'Código do Agente',
+            value=policial[9],
+            key='codigo_agente',
+            disabled=True   
+        )
 
-# Layout cards
-col1, col2, col3 = st.columns(3)
-col4, col5, col6 = st.columns(3)
-with col1:
-    card('Vagas de Oficias', vagas_oficiais,'#0d6efd')
-with col2:
-    card('Oficiais Cadastrado', oficiais_cadastrados,'#dc3545')
-with col3:
-    card('Vagas Preenchidas', vagas_oficiais_preenchidas,'#198754')
-with col4:
-    card('Vagas de Praças', vagas_pracas,'#0d6efd')
-with col5:
-    card('Praças Cadastrados', pracas_cadastrados,'#dc3545')
-with col6:
-    card('Vagas Preenchidas', vagas_pracas_preenchidas,'#198754')
-st.markdown('<hr></hr>',unsafe_allow_html=True)
-policiais = buscar_agentes()
-st.dataframe(policiais, use_container_width=True)
+    observacao = st.text_area('Observação', value=policial[10], height=200, key='observacao',disabled=True)
+    nome = nome.upper()
+    nome_guerra = nome_guerra.upper()
+
+    voltar = st.button('Voltar ao início')
+    if voltar:
+        st.switch_page("paginas\cadastro\Home.py")
+else:
+    st.warning('Agente não encontrado')

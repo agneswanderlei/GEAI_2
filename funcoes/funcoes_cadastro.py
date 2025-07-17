@@ -20,6 +20,8 @@ def inserir_agente(
         funcao,
         situacao,
         situacao_agente,
+        data_form,
+        num_form,
         codigo_agente,
         observacao,
         data_cadastro
@@ -39,20 +41,25 @@ def inserir_agente(
                     funcao,
                     situacao,
                     situacao_agente,
+                    data_form,
+                    num_form,
                     codigo_agente,
                     observacao,
                     data_cadastro
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 matricula,
                 nome,
                 nome_guerra,
-                cargo,quadro,
+                cargo,
+                quadro,
                 setor,
                 funcao,
                 situacao,
                 situacao_agente,
+                data_form,
+                num_form,
                 codigo_agente,
                 observacao,
                 data_cadastro
@@ -61,7 +68,7 @@ def inserir_agente(
         conexao.commit()
         st.success('Agente cadastrado com sucesso')
         time.sleep(1)
-        st.switch_page('paginas\cadastro\Visualizar.py')
+        st.switch_page("paginas\cadastro\Home.py")
     except sqlite3.IntegrityError:
         st.error(f'A matrícula {matricula} já está cadastrada!')
         st.error('Não é permitido matriculas com hifens!')

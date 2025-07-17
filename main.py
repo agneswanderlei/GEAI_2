@@ -1,12 +1,14 @@
 import streamlit as st
-st.set_page_config('Menu',layout='wide')
-st.title('Controle de GEAIS',anchor=False,)
+
+st.title('Controle de GEAI',anchor=False,)
 pages = {
     'Agentes': [
-        'paginas\cadastro\Visualizar.py',
+        'paginas\cadastro\Home.py',
         'paginas\cadastro\Adicionar.py',
         'paginas\cadastro\Editar.py',
-        'paginas\cadastro\Excluir.py'
+        'paginas\cadastro\Excluir.py',
+        'paginas\cadastro\Visualizar.py',
+
     ],
     'Relatórios': [
         'paginas\Relatorios\Graficos_1.py',

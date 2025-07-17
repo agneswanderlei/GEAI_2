@@ -14,6 +14,8 @@ cursor.execute(
         funcao TEXT NOT NULL,
         situacao TEXT NOT NULL,
         situacao_agente TEXT NOT NULL,
+        data_form TEXT NOT NULL,
+        num_form TEXT NOT NULL,
         codigo_agente TEXT NOT NULL,
         observacao TEXT NOT NULL,
         data_cadastro TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
