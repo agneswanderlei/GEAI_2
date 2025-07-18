@@ -2,8 +2,12 @@ import streamlit as st
 import os, sys
 import time
 import sqlite3
+from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from funcoes.funcoes_cadastro import buscar_dados, atualizar_cadastro,conectardb
+from funcoes.funcoes_cadastro import atualizar_cadastro
+
+# funções
+
 
 options_cargo = [
     '',
@@ -135,9 +139,13 @@ policial = next((p for p in policiais if p[0] == id_selecionado), None)
 # formulário
 st.markdown('<hr></hr>', unsafe_allow_html=True)
 if policial:
-    col1, col2, col3 = st.columns([1,2,1])
+    col1, col10, col11, col2, col3 = st.columns(5)
     col4, col5, col6 = st.columns(3)
     col7, col8, col9 = st.columns([1,1,2])
+    with col10:
+        data_form = st.date_input('Data do Formulário', key='data_form',value=policial[9], disabled=True)
+    with col11:
+        num_form = st.text_input('Nº do Formulário', key='num_form', value=policial[10], disabled=True)
     with col1:
         matricula = st.text_input('Matricula', key='matricula2',value=policial[0],disabled=True)
     with col2:
@@ -198,6 +206,7 @@ if policial:
     atualiar = st.button('Atualizar',disabled=botao_habilitado)
     if atualiar:
         atualizar_cadastro(
+            matricula,
             nome,
             nome_guerra,
             cargo,
@@ -206,9 +215,10 @@ if policial:
             funcao,
             situacao,
             situacao_agente,
+            data_form,
+            num_form,
             codigo_agente,
             observacao,
-            matricula
         )
         st.toast('✅ Agente atualizado com sucesso!')
         st.session_state['matricula_default'] = ids[0]  # Define como primeira matrícula

@@ -126,12 +126,14 @@ vagas_pracas_preenchidas = 0
 def buscar_agentes():
     conn = sqlite3.connect('./db/Geai.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT matricula, nome, nome_guerra, cargo, quadro, setor, situacao_agente, situacao, codigo_agente, data_cadastro FROM Agentes")
+    cursor.execute("SELECT data_form, num_form, matricula, nome, nome_guerra, cargo, quadro, setor, situacao_agente, situacao, codigo_agente, data_cadastro FROM Agentes")
     colunas = [desc[0] for desc in cursor.description] # nome das colunas
     policiais = cursor.fetchall()
     conn.close()
     dados = pd.DataFrame(policiais,columns=colunas)
     dados = dados.rename(columns={
+        'data_form':'Data do Formulário',
+        'num_form': 'Nº Formulário',
         'matricula': 'Matricula',
         'nome': 'Nome',
         'nome_guerra': 'Nome de Guerra',

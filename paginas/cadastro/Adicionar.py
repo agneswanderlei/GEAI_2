@@ -5,6 +5,19 @@ from funcoes.funcoes_cadastro import inserir_agente, conectardb
 import time
 import sqlite3
 from datetime import datetime
+st.set_page_config('Adicionar',layout='wide')
+
+def formulario_existe_ano(num_form, data_form):
+    conn = sqlite3.connect('./db/Geai.db')
+    cursor = conn.cursor()
+    ano = data_form.year
+    cursor.execute("""
+        SELECT 1 FROM Agentes
+        WHERE num_form = ? AND strftime('%Y', data_form) = ?
+        """, (num_form, str(ano)))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado is not None
 
 
 st.header('Adicionar Agentes',width='content')
@@ -12,7 +25,7 @@ st.header('Adicionar Agentes',width='content')
 if "matricula" not in st.session_state:
     st.session_state.matricula = ''
 with st.form('Cadastro de Agentes', clear_on_submit=True):
-    col1, col2, col3, col4, col5 = st.columns([1,1,1,3,1])
+    col3, col1, col2, col4, col5 = st.columns([1,1,1,3,1])
     col6, col7, col8 = st.columns(3)
     col9, col10, col11 = st.columns([1,1,2])
 
@@ -151,6 +164,10 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
     nome_guerra = nome_guerra.upper()
     submite = st.form_submit_button('Salvar')
     if submite:
+        if data_form == '':
+            st.toast('Por favor digite a Data do formulário!', icon='⚠️')
+        if num_form.strip() == '':
+            st.toast('Por favor digite o Número do formulário!', icon='⚠️')
         if matricula.strip() == '':
             st.toast('Por favor digite a Matricula!', icon='⚠️')
         if nome.strip() == '':
@@ -167,27 +184,32 @@ with st.form('Cadastro de Agentes', clear_on_submit=True):
             st.toast('Por favor selecione uma Função!',icon='⚠️')
         if situacao_agente == '':
             st.toast('Por favor selecione uma Situação do Agente!',icon='⚠️')
-        if matricula != '' and nome != '' and nome_guerra != '' and cargo != '' and quadro != '' and setor != '' and funcao != '' and situacao_agente != '':
-            matricula = str(matricula)
-            quebra_nome = nome.split(' ')
-            letra1 = quebra_nome[0][0]
-            letra2 = quebra_nome[1][1]
-            letra3 = quebra_nome[-1][0]
-            letra4 = matricula[1]
-            letra5 = matricula[-2]
-            letra6 = matricula[-1]
-            codigo_agente = letra1 + letra2 + letra3 + letra4 + letra5 + letra6
-            inserir_agente(
-                matricula,
-                nome,
-                nome_guerra,
-                cargo,
-                quadro,
-                setor,
-                funcao,
-                situacao,
-                situacao_agente,
-                codigo_agente,
-                observacao,
-                data_cadastro
-            )
+        if matricula != '' and nome != '' and nome_guerra != '' and cargo != '' and quadro != '' and setor != '' and funcao != '' and situacao_agente != '' and num_form != '' and data_form != '':
+            if formulario_existe_ano(num_form, data_form):
+                st.toast('Esse número de formulário já existe!', icon='🚫')
+            else:
+                matricula = str(matricula)
+                quebra_nome = nome.split(' ')
+                letra1 = quebra_nome[0][0]
+                letra2 = quebra_nome[1][1]
+                letra3 = quebra_nome[-1][0]
+                letra4 = matricula[1]
+                letra5 = matricula[-2]
+                letra6 = matricula[-1]
+                codigo_agente = letra1 + letra2 + letra3 + letra4 + letra5 + letra6
+                inserir_agente(
+                    matricula,
+                    nome,
+                    nome_guerra,
+                    cargo,
+                    quadro,
+                    setor,
+                    funcao,
+                    situacao,
+                    situacao_agente,
+                    data_form,
+                    num_form,
+                    codigo_agente,
+                    observacao,
+                    data_cadastro
+                )

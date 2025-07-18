@@ -86,18 +86,19 @@ def buscar_dados(matricula):
     conn.close()
     return resultado
 
-def atualizar_agente(matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, situacao_agente, codigo_agente, observacao):
-    conn = conectardb()
-    cursor = conn.cursor()
-    cursor.execute("""
-        UPDATE Agentes
-        SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, situacao_agente = ?, codigo_agente = ?, observacao = ?
-        WHERE matricula = ?
-    """, (nome, nome_guerra, cargo, quadro, setor, funcao, situacao, situacao_agente, codigo_agente, observacao, matricula))
-    conn.commit()
-    conn.close()
+# def atualizar_agente(matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao, situacao_agente, codigo_agente, observacao):
+#     conn = conectardb()
+#     cursor = conn.cursor()
+#     cursor.execute("""
+#         UPDATE Agentes
+#         SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, situacao_agente = ?, codigo_agente = ?, observacao = ?
+#         WHERE matricula = ?
+#     """, (nome, nome_guerra, cargo, quadro, setor, funcao, situacao, situacao_agente, codigo_agente, observacao, matricula))
+#     conn.commit()
+#     conn.close()
 
 def atualizar_cadastro(
+        matricula,
         nome,
         nome_guerra,
         cargo,
@@ -106,15 +107,16 @@ def atualizar_cadastro(
         funcao,
         situacao,
         situacao_agente,
+        data_form,
+        num_form,
         codigo_agente,
         observacao,
-        matricula,
 
 ):
     conn = conectardb()
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, situacao_agente = ?, codigo_agente = ?, observacao = ? WHERE matricula =?
+        UPDATE Agentes SET nome = ?, nome_guerra = ?, cargo = ?, quadro = ?, setor = ?, funcao = ?, situacao = ?, situacao_agente = ?, data_form = ?, num_form =?, codigo_agente = ?, observacao = ? WHERE matricula =?
     """,(
         nome,
         nome_guerra,
@@ -124,9 +126,11 @@ def atualizar_cadastro(
         funcao,
         situacao,
         situacao_agente,
+        data_form,
+        num_form,
         codigo_agente,
         observacao,
-        matricula,
+        matricula
     ))
     conn.commit()
     conn.close()
