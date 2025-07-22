@@ -4,5 +4,9 @@
 17/07 - terminei de colocar os filtros e o botao para exportar excel.
 18/07 - coloquei a função para salvar o numero do formulário somente se o ano for diferente.
 #TAREFAS:
-colocar filtro para datas
-configurar paginas deletar e visualizar.
+colocar filtro para datas - ok - 22/07
+configurar paginas deletar e visualizar. - ok - 22/07
+configurei todo crud de vagas. ok - 22/07
+#TAREFAS
+configurar para quando excluir setor não dar erro nem no edtiar nem no excluir nem no viasualizar agentes.
+

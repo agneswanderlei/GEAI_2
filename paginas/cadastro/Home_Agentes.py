@@ -190,7 +190,7 @@ st.markdown('<hr></hr>',unsafe_allow_html=True)
 policiais = buscar_agentes()
 st.title('Filtros')
 # filtros
-col7, col8, col9, col10, col11 = st.columns(5)
+col7, col8, col9, col10, col11, col12, col13 = st.columns([1,1,1,2,2,1,1])
 with col7:
     cargo = st.multiselect('Cargo',options_cargo)
 with col8:
@@ -201,6 +201,11 @@ with col10:
     situacao_agente = st.multiselect('Situação do Agente',options_situacao_agente)
 with col11:
     situacao = st.multiselect('Situacão Extra',options_situacao)
+with col12:
+    date_inicio = st.date_input('Data Início', value=None, format='DD/MM/YYYY')
+with col13:
+    date_fim = st.date_input('Data Fim', value=None, format='DD/MM/YYYY')
+    
 if cargo:
     policiais = policiais[policiais['Cargo'].isin(cargo)]
 if quadro:
@@ -211,6 +216,12 @@ if situacao_agente:
     policiais = policiais[policiais['Situação do Agente'].isin(situacao_agente)]
 if situacao:
     policiais = policiais[policiais['Situação Extra'].isin(situacao)]
+policiais['Data do Formulário'] = pd.to_datetime(policiais['Data do Formulário'])
+if date_inicio and date_fim:
+   policiais = policiais[
+       (policiais['Data do Formulário'].dt.date >= date_inicio) &
+       (policiais['Data do Formulário'].dt.date <= date_inicio)
+   ]
 
 # EXPORTAR PARA EXCEL
 # criar um buffer na memoria
@@ -241,5 +252,5 @@ pagina_atual = st.number_input(
 inicio = (pagina_atual - 1) * por_paginas
 fim = inicio + por_paginas
 
-st.dataframe(policiais.iloc[inicio:fim], use_container_width=True,)
+st.dataframe(policiais.iloc[inicio:fim], use_container_width=False,)
 # st.dataframe(policiais, use_container_width=True,)

@@ -1,13 +1,26 @@
 import streamlit as st
 
-st.title('Controle de GEAI',anchor=False,)
+st.markdown("""
+    <div style='margin-top: -50px; text-align: center;'>
+        <h1>Controle de GEAI</h1>
+    </div>
+
+""", unsafe_allow_html=True)
 pages = {
     'Agentes': [
-        'paginas\cadastro\Home.py',
-        'paginas\cadastro\Adicionar.py',
-        'paginas\cadastro\Editar.py',
-        'paginas\cadastro\Excluir.py',
-        'paginas\cadastro\Visualizar.py',
+        'paginas\cadastro\Home_Agentes.py',
+        'paginas\cadastro\Adicionar_Agentes.py',
+        'paginas\cadastro\Editar_Agentes.py',
+        'paginas\cadastro\Excluir_Agentes.py',
+        'paginas\cadastro\Visualizar_Agentes.py',
+
+    ],
+    'Vagas': [
+        'paginas\Vagas\Home_Vagas.py',
+        "paginas\Vagas\Adicionar_Vagas.py",
+        'paginas\Vagas\Editar_Vagas.py',
+        'paginas\Vagas\Excluir_Vagas.py',
+        'paginas\Vagas\Visualizar_Vagas.py',
 
     ],
     'Relatórios': [
