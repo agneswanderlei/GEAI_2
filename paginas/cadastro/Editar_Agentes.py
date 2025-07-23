@@ -5,6 +5,7 @@ import sqlite3
 from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from funcoes.funcoes_cadastro import atualizar_cadastro
+st.set_page_config('Editar Agentes',layout='wide')
 
 # funções
 
@@ -29,60 +30,6 @@ options_quadro = [
     'QOPM',
     'QOAPM',
     'QPMG'
-]
-options_setor = [
-    '',
-    'CHEFIA',
-    'ADJUNTO',
-    'SSA',
-    'NTMB',
-    'SS CSP',
-    'SS PC',
-    'NA',
-    'NO',
-    'PERMANÊNCIA',
-    'TI',  
-    'SS CCI',
-    'SS CI',
-    'CR I',
-    'CR II',
-    'CR III',
-    'NIE',
-    'ASI-7 / 1º BPM',
-    'ASI-11 / 2º BPM',
-    'ASI-19 / 3º BPM',
-    'ASI-14 / 4º BPM',
-    'ASI-26 / 5º BPM',
-    'ASI-6 / 6º BPM',
-    'ASI-24 / 7º BPM',
-    'ASI-23 / 8º BPM',
-    'ASI-18 / 9º BPM',
-    'ASI-13 / 10º BPM',
-    'ASI-5 / 11º BPM',
-    'ASI-4 / 12º BPM',
-    'ASI-2 / 13º BPM',
-    'ASI-21 / 14º BPM',
-    'ASI-1 / 16º BPM',
-    'ASI-8 / 17º BPM',
-    'ASI-10 / 18º BPM',
-    'ASI-3 / 19º BPM',
-    'ASI-9 / 20º BPM',
-    'ASI-6 / 25º BPM',
-    'ASI-8 / 26º BPM',
-    'ASI-15 / 15º BPM',
-    'ASI-12 / 21º BPM',
-    'ASI-16 / 22º BPM',
-    'ASI-17 / 24º BPM',
-    'ASI-11 / 3ª CIPM',
-    'ASI-12 / 5ª CIPM',
-    'ASI-16 / 6ª CIPM',
-    'ASI-15 / 8ª CIPM',
-    'ASI-13 / 10ª CIPM',
-    'ASI-20 / 23º BPM',
-    'ASI-22 / 1ª CIPM',
-    'ASI-25 / 2ª CIPM',
-    'ASI-22 / 4ª CIPM',
-    'ASI-25 / 7ª CIPM'
 ]
 options_funcao = [
     '',
@@ -124,13 +71,20 @@ def listar_policiais():
     data = cursor.fetchall()
     conn.close()
     return data
+def listar_setores():
+    conn = sqlite3.connect('./db/Geai.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM Vagas')
+    data = cursor.fetchall()
+    conn.close()
+    return data
 
 # Campo para digitar matrícula e botão de busca
 st.header('Editar Agentes')
 policiais = listar_policiais()
 ids = [p[0] for p in policiais]
-
-
+setores = listar_setores()
+ids_sel = [p[0] for p in setores]
 
 id_selecionado = st.selectbox('Matricula', ids,help='"🔍 Buscar Agente por Matrícula"', placeholder='Digite a matricula.',format_func=lambda x: f'{x} - {next(p[1] for p in policiais if p[0]==x)}')
 policial = next((p for p in policiais if p[0] == id_selecionado), None)
@@ -169,8 +123,8 @@ if policial:
     with col6:
         setor = st.selectbox(
             'Setor',
-            options_setor,
-            index=options_setor.index(policial[5]),
+            ids_sel,
+            index=ids_sel.index(policial[5]),
             key='setor'
         )
     with col7:
@@ -194,7 +148,7 @@ if policial:
             index=options_situacao.index(policial[7]),
             key='situacao'
         )
-    observacao = st.text_area('Observação', value=policial[10], height=200, key='observacao')
+    observacao = st.text_area('Observação', value=policial[12], height=200, key='observacao')
     nome = nome.upper()
     nome_guerra = nome_guerra.upper()
 
@@ -202,7 +156,7 @@ if policial:
     if nome.strip() == '' or nome_guerra.strip() == '' or cargo =='' or quadro == '' or setor == '' or funcao == '' or situacao_agente == '':
         botao_habilitado = True
         st.warning('Todos os campos devem ser preenchidos!',icon='⚠️')
-    codigo_agente = 0
+    codigo_agente = policial[11]
     atualiar = st.button('Atualizar',disabled=botao_habilitado)
     if atualiar:
         atualizar_cadastro(

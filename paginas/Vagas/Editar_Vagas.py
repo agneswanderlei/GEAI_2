@@ -3,7 +3,7 @@ import os, sys
 import time
 import sqlite3
 from datetime import datetime
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 from funcoes_vagas import atualizar_vagas
 
 st.set_page_config('Editar Setor',layout='centered')

@@ -66,7 +66,7 @@ def inserir_agente(
             )
         )
         conexao.commit()
-        st.success('Agente cadastrado com sucesso')
+        st.toast('Agente cadastrado com sucesso', icon='✅')
         time.sleep(1)
         st.switch_page("paginas\cadastro\Home_Agentes.py")
     except sqlite3.IntegrityError:

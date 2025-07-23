@@ -3,6 +3,7 @@ import os, sys
 import time
 import sqlite3
 from datetime import datetime
+import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from funcoes_vagas import atualizar_vagas
 
@@ -18,6 +19,18 @@ def deletar_agentes(setorr):
     st.success('Agente excluido com sucesso!',icon='✅')
     time.sleep(1)
     st.switch_page("paginas\Vagas\Home_Vagas.py")
+def buscar_dados():
+    conn = sqlite3.connect('./db/Geai.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT setor FROM Agentes
+    """
+    )
+    colunas = [desc[0] for desc in cursor.description]
+    dados = cursor.fetchall()
+    df = pd.DataFrame(dados, columns=colunas)
+    return df
 
 
 @st.dialog('Atenção')
@@ -45,7 +58,6 @@ setores = listar_setor()
 ids = [p[0] for p in setores]
 ids_selecionado = st.selectbox('Setor', ids,key='setor_selecionado')
 setorr = next((p for p in setores if p[0] == ids_selecionado), None)
-print('teste',setorr)
 # formulário
 st.markdown('<hr></hr>', unsafe_allow_html=True)
 if setores:
@@ -57,13 +69,12 @@ if setores:
             vagas = st.number_input('Vagas', step=1, value=setorr[1], disabled=True)
         
         observacao = st.text_area('Observações',height=200, key='observacao', value=setorr[2], disabled=True)
-        
         data_cadastro = datetime.now()
         submite = st.form_submit_button('Excluir')
         if submite:
-            
-            if setor == '':
-                st.toast('Por favor selecione um Setor!',icon='⚠️')
-            
-            if setor != '' :
+            df = buscar_dados()
+            quantidade = df.value_counts()
+            if setor in quantidade:
+                st.error('Não é possível excluir setor pois há agentes cadastrado!')
+            else:
                 deletar_msg(setorr)

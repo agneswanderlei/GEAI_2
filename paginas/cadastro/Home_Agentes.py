@@ -28,60 +28,6 @@ options_quadro = [
     'QOAPM',
     'QPMG'
 ]
-options_setor = [
-    '',
-    'CHEFIA',
-    'ADJUNTO',
-    'SSA',
-    'NTMB',
-    'SS CSP',
-    'SS PC',
-    'NA',
-    'NO',
-    'PERMANÊNCIA',
-    'TI',  
-    'SS CCI',
-    'SS CI',
-    'CR I',
-    'CR II',
-    'CR III',
-    'NIE',
-    'ASI-7 / 1º BPM',
-    'ASI-11 / 2º BPM',
-    'ASI-19 / 3º BPM',
-    'ASI-14 / 4º BPM',
-    'ASI-26 / 5º BPM',
-    'ASI-6 / 6º BPM',
-    'ASI-24 / 7º BPM',
-    'ASI-23 / 8º BPM',
-    'ASI-18 / 9º BPM',
-    'ASI-13 / 10º BPM',
-    'ASI-5 / 11º BPM',
-    'ASI-4 / 12º BPM',
-    'ASI-2 / 13º BPM',
-    'ASI-21 / 14º BPM',
-    'ASI-1 / 16º BPM',
-    'ASI-8 / 17º BPM',
-    'ASI-10 / 18º BPM',
-    'ASI-3 / 19º BPM',
-    'ASI-9 / 20º BPM',
-    'ASI-6 / 25º BPM',
-    'ASI-8 / 26º BPM',
-    'ASI-15 / 15º BPM',
-    'ASI-12 / 21º BPM',
-    'ASI-16 / 22º BPM',
-    'ASI-17 / 24º BPM',
-    'ASI-11 / 3ª CIPM',
-    'ASI-12 / 5ª CIPM',
-    'ASI-16 / 6ª CIPM',
-    'ASI-15 / 8ª CIPM',
-    'ASI-13 / 10ª CIPM',
-    'ASI-20 / 23º BPM',
-    'ASI-22 / 1ª CIPM',
-    'ASI-25 / 2ª CIPM',
-    'ASI-22 / 4ª CIPM',
-    'ASI-25 / 7ª CIPM'
-]
 options_funcao = [
     '',
     'ADJUNTO',
@@ -126,7 +72,7 @@ vagas_pracas_preenchidas = 0
 def buscar_agentes():
     conn = sqlite3.connect('./db/Geai.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT data_form, num_form, matricula, nome, nome_guerra, cargo, quadro, setor, situacao_agente, situacao, codigo_agente, data_cadastro FROM Agentes")
+    cursor.execute("SELECT data_form, num_form, matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao_agente, situacao, codigo_agente, data_cadastro FROM Agentes")
     colunas = [desc[0] for desc in cursor.description] # nome das colunas
     policiais = cursor.fetchall()
     conn.close()
@@ -140,6 +86,7 @@ def buscar_agentes():
         'cargo': 'Cargo',
         'quadro': 'Quadro',
         'setor': 'Setor',
+        'funcao': 'Função',
         'situacao_agente': 'Situação do Agente',
         'situacao': 'Situação Extra',
         'codigo_agente': 'Código do Agente',
@@ -188,15 +135,18 @@ with col6:
     card('Vagas Preenchidas', vagas_pracas_preenchidas,'#198754')
 st.markdown('<hr></hr>',unsafe_allow_html=True)
 policiais = buscar_agentes()
+ids = [p for p in policiais['Setor']]
+
 st.title('Filtros')
 # filtros
-col7, col8, col9, col10, col11, col12, col13 = st.columns([1,1,1,2,2,1,1])
+col7, col8, col9, col10 = st.columns(4)
+col11, col14, col12, col13 = st.columns(4)
 with col7:
     cargo = st.multiselect('Cargo',options_cargo)
 with col8:
     quadro = st.multiselect('Quadro',options_quadro)
 with col9:
-    setor = st.multiselect('Setor',options_setor)
+    setor = st.multiselect('Setor',ids)
 with col10:
     situacao_agente = st.multiselect('Situação do Agente',options_situacao_agente)
 with col11:
@@ -205,6 +155,8 @@ with col12:
     date_inicio = st.date_input('Data Início', value=None, format='DD/MM/YYYY')
 with col13:
     date_fim = st.date_input('Data Fim', value=None, format='DD/MM/YYYY')
+with col14:
+    funcao = st.multiselect('Função',options_funcao)
     
 if cargo:
     policiais = policiais[policiais['Cargo'].isin(cargo)]
@@ -217,6 +169,8 @@ if situacao_agente:
 if situacao:
     policiais = policiais[policiais['Situação Extra'].isin(situacao)]
 policiais['Data do Formulário'] = pd.to_datetime(policiais['Data do Formulário'])
+if funcao:
+    policiais = policiais[policiais['Função'].isin(funcao)]
 if date_inicio and date_fim:
    policiais = policiais[
        (policiais['Data do Formulário'].dt.date >= date_inicio) &
@@ -252,5 +206,5 @@ pagina_atual = st.number_input(
 inicio = (pagina_atual - 1) * por_paginas
 fim = inicio + por_paginas
 
-st.dataframe(policiais.iloc[inicio:fim], use_container_width=False,)
+st.dataframe(policiais.iloc[inicio:fim], use_container_width=True,)
 # st.dataframe(policiais, use_container_width=True,)
