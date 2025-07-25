@@ -23,6 +23,14 @@ pages = {
         'paginas\Vagas\Visualizar_Vagas.py',
 
     ],
+    'Pautas': [
+        'paginas\Pautas\Home_Pautas.py',
+        "paginas\Pautas\Adicionar_Pautas.py",
+        'paginas\Pautas\Editar_Pautas.py',
+        'paginas\Pautas\Excluir_Pautas.py',
+        'paginas\Pautas\Visualizar_Pautas.py',
+
+    ],
     'Relatórios': [
         'paginas\Relatorios\Graficos_1.py',
         'paginas\Relatorios\Graficos_2.py',

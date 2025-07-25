@@ -9,15 +9,9 @@ configurar paginas deletar e visualizar. - ok - 22/07
 configurei todo crud de vagas. ok - 22/07
 #TAREFAS
 configurar para quando excluir setor não dar erro nem no edtiar nem no excluir nem no viasualizar agentes. ok - 23/07
-criar as tabelas pauta, pauta_agente.
+criar as tabelas pauta, pauta_agente. ok - 24/07
+terminei editar_pautas - ok 24/07
+falta visualizar_pauta e delete_pauta.
 
-- Pauta
-- num_pauta: INTEGER PRIMARY KEY
-- data_envio: TEXT ou DATE
-- observacao: TEXT (opcional)
-- Agentes_pauta
-- id: INTEGER PRIMARY KEY
-- num_pauta: INTEGER (chave estrangeira referenciando Pauta)
-- matricula: INTEGER (chave estrangeira referenciando Agentes)
-- situacao_agente: TEXT (ex: “Cadastro” ou “Desligamento”)
+
 
