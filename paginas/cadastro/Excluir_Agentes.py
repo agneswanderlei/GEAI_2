@@ -1,6 +1,7 @@
 import streamlit as st
 import time
 import sqlite3
+import pandas as pd
 st.set_page_config('Excluir Agentes',layout='wide')
 
 options_cargo = [
@@ -74,6 +75,19 @@ def listar_policiais():
     data = cursor.fetchall()
     conn.close()
     return data
+
+def buscar_agentes_pautas():
+    conn = sqlite3.connect('./db/Geai.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT matricula FROM Agentes_pauta
+        """
+    )
+    dados = cursor.fetchall()
+    colunas = [desc[0] for desc in cursor.description]
+    df = pd.DataFrame(dados,columns=colunas)
+    return df
 
 @st.dialog('Atenção')
 def deletar_msg(policial):
@@ -167,6 +181,13 @@ if policial:
     codigo_agente = 0
     deletar = st.button('Deletar')
     if deletar:
-        deletar_msg(policial)
+        df = buscar_agentes_pautas()
+        quantidade = df.value_counts()
+        print(matricula)
+        print(matricula in quantidade)
+        if int(matricula) in quantidade:
+            st.error('Não é possível excluir o Agente! pois há agentes cadastrado na tabela Pautas!')
+        else:
+            deletar_msg(policial)
 else:
     st.warning('Agente não encontrado!')

@@ -7,7 +7,7 @@ from funcoes_Pautas import atualizar_pauta, atualizar_agentes_pauta, criar_tabel
 import time
 
 # Configuração pagina
-st.set_page_config('Adicionar Pautas',layout='centered')
+st.set_page_config('Editar Pautas',layout='centered')
 #  Criar tabela caso nao exista
 criar_tabela_pautas()
 
@@ -96,15 +96,11 @@ with col5:
         agente_add = st.session_state.agentes_pauta_e
         print(type(agente_add))
 
-# mostrar agentes na tabela
-# agentes_vinculados = buscar_agentes_pautas(ids_selecionado)
-print('-----------------------------------')
-# print('agentes_vinculos:',agentes_vinculados )
-print('state_antes',st.session_state.agentes_pauta_e)
-# Quando a pauta é selecionada, carregue os agentes para o estado
+# Quando a pauta é selecionada, carrega os agentes para o estado
 if 'agentes_pauta_e' not in st.session_state or st.session_state.pauta_carregada != ids_selecionado:
     st.session_state.agentes_pauta_e = buscar_agentes_pautas(ids_selecionado)
     st.session_state.pauta_carregada = ids_selecionado
+# mostrar agentes na tabela
 df_agentes = pd.DataFrame(st.session_state.agentes_pauta_e, columns=['Agentes', 'Situação'])
 
 df_editavel = st.data_editor(
@@ -113,7 +109,6 @@ df_editavel = st.data_editor(
     num_rows='dynamic',
     disabled=['Agentes', 'Situação']
 )
-print('state_depois',st.session_state.agentes_pauta_e)
 
 # 🔁 Aqui, atualiza o state
 st.session_state.agentes_pauta_e = df_editavel.to_records(index=False).tolist()

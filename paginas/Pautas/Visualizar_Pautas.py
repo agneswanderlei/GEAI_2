@@ -1,62 +1,108 @@
 import streamlit as st
-import time
+import sys, os
+import pandas as pd
 import sqlite3
-from datetime import datetime
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+from funcoes_Pautas import criar_tabela_pautas
+import time
 
-st.set_page_config('Excluir Setor',layout='centered')
+# Configuração pagina
+st.set_page_config('Visualizar Pautas',layout='centered')
+#  Criar tabela caso nao exista
+criar_tabela_pautas()
 
-# funções
-def deletar_agentes(setorr):
+# Carregar dados dos agentes
+conn = sqlite3.connect('./db/Geai.db')
+cursor = conn.cursor()
+cursor.execute(
+    """
+        SELECT matricula, nome FROM Agentes
+    """
+)
+dados_agentes = cursor.fetchall()
+opcoes_agentes = [f"{matricula} - {nome}" for matricula,nome in dados_agentes]
+conn.close()
+# Buscar dados pautas
+def listar_pautas():
     conn = sqlite3.connect('./db/Geai.db')
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM Vagas WHERE setor = ?",(setorr[0],))
-    conn.commit()
+    cursor.execute(
+        """
+            SELECT * FROM Pautas
+        """
+    )
+    dados_pautas = cursor.fetchall()
     conn.close()
-    st.success('Agente excluido com sucesso!',icon='✅')
-    time.sleep(1)
-    st.switch_page("paginas\Vagas\Home_Vagas.py")
+    return dados_pautas
 
-
-@st.dialog('Atenção')
-def deletar_msg(setorr):
-    st.write(f'Deseja Excluir o Setor?')
-    st.write(f'Setor: {setorr[0]}')
-    st.write(f'Vagas: {setorr[1]}')
-    st.markdown('<hr></hr>', unsafe_allow_html=True)
-    if st.button('✅ Sim, Excluir!', key='botao_confir_delete'):
-        deletar_agentes(setorr)
-
-
-
-def listar_setor():
+def buscar_agentes_pautas(num_pauta):
     conn = sqlite3.connect('./db/Geai.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM Vagas')
-    data = cursor.fetchall()
-    conn.close()
-    return data
+    cursor.execute(
+        """
+        SELECT 
+            Agentes.matricula,
+            Agentes.nome,
+            Agentes_pauta.situacao_agente
+        FROM Agentes_pauta
+        JOIN Agentes ON Agentes_pauta.matricula = Agentes.matricula
+        WHERE Agentes_pauta.num_pauta = ?
+        """,
+        (num_pauta,)
+    )
+    resultado = cursor.fetchall()
+    cursor.close()
+    dados_formatados = [(f'{matricula} - {nome}', situacao) for matricula, nome, situacao in resultado]
+    return dados_formatados
 
-# Campo para digitar matrícula e botão de busca
-st.header('Excluir Setor')
-setores = listar_setor()
-ids = [p[0] for p in setores]
-ids_selecionado = st.selectbox('Setor', ids,key='setor_selecionado')
-setorr = next((p for p in setores if p[0] == ids_selecionado), None)
-print('teste',setorr)
-# formulário
-st.markdown('<hr></hr>', unsafe_allow_html=True)
-if setores:
-    with st.form('Cadastro de Agentes', clear_on_submit=True):
-        col1, col2 = st.columns([2,1])
-        with col1:
-            setor = st.text_input('Setor',key='setor', value=setorr[0], disabled=True)
-        with col2:
-            vagas = st.number_input('Vagas', step=1, value=setorr[1], disabled=True)
-        
-        observacao = st.text_area('Observações',height=200, key='observacao', value=setorr[2], disabled=True)
-        
-        data_cadastro = datetime.now()
-        submite = st.form_submit_button('Voltar')
-        if submite:
-            st.switch_page('paginas\Vagas\Home_Vagas.py')
-            
+
+# Iniciar o estado
+if 'agentes_pauta_e' not in st.session_state:
+    st.session_state.agentes_pauta_e = []
+if 'pauta_carregada' not in st.session_state:
+    st.session_state.pauta_carregada = None
+
+
+# Formulario do Editar de Pauta
+st.header('Visualizar Pauta',width='content')
+dados_pautas = listar_pautas()
+ids = [p[0] for p in dados_pautas]
+ids_selecionado = st.selectbox('Nº Pauta',ids, key='pauta_selecionada')
+dados_pautas_trat = next((p for p in dados_pautas if p[0] == ids_selecionado), None)
+
+st.markdown('<hr></hr>',unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+with col1:
+    num_pauta = st.text_input('Número da pauta', disabled=True, value=dados_pautas_trat[0])
+with col2:
+    data_envio = st.date_input('Data de envio',format="DD/MM/YYYY", value=dados_pautas_trat[1],disabled=True)
+
+# Formulário de adicionar agentes
+st.subheader('Agentes Adicionados')
+
+
+
+# Quando a pauta é selecionada, carregue os agentes para o estado
+if 'agentes_pauta_e' not in st.session_state or st.session_state.pauta_carregada != ids_selecionado:
+    st.session_state.agentes_pauta_e = buscar_agentes_pautas(ids_selecionado)
+    st.session_state.pauta_carregada = ids_selecionado
+
+# mostrar agentes na tabela
+df_agentes = pd.DataFrame(st.session_state.agentes_pauta_e, columns=['Agentes', 'Situação'])
+df_editavel = st.data_editor(
+    df_agentes,
+    hide_index=True,
+    num_rows='fixed',
+    disabled=['Agentes', 'Situação']
+)
+
+# 🔁 Aqui, atualiza o state
+st.session_state.agentes_pauta_e = df_editavel.to_records(index=False).tolist()
+
+# Atualizar o estado após editar na tabela
+observacao = st.text_area('Observação',height=400, value=dados_pautas_trat[2],disabled=True)
+
+# Botão salvar
+if st.button('Voltar'):
+    st.switch_page('paginas/Pautas/Home_Pautas.py')

@@ -128,3 +128,26 @@ def atualizar_agentes_pauta(num_pauta, lista_agentes):
         return False
     finally:
         conn.close()
+
+def excluir_pauta(num_pauta):
+    try:
+        conn = sqlite3.connect('./db/Geai.db')
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            DELETE FROM Pautas WHERE num_pauta = ?
+            """,
+            (num_pauta,)   
+        )
+        cursor.execute(
+            """
+            DELETE FROM Agentes_pauta WHERE num_pauta = ?
+            """,
+            (num_pauta,)
+        )
+        conn.commit()
+        st.success('Pauta excluida com sucesso!')
+    except Exception as e:
+        st.error(f'Não foi possível excluir {e}!')
+    finally:
+        conn.close()

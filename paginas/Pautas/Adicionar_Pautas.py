@@ -26,7 +26,7 @@ if 'agentes_pauta' not in st.session_state:
     st.session_state.agentes_pauta = []
 
 # Formulario do Cadastro de Pauta
-st.header('Cadastrar Pauta',width='content')
+st.header('Adicionar Pauta',width='content')
 col1, col2 = st.columns(2)
 with col1:
     num_pauta = st.text_input('Número da pauta')

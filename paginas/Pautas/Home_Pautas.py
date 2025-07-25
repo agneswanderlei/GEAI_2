@@ -84,24 +84,6 @@ with col4:
 with col5:
     data_final = st.date_input('Data Final', format='DD/MM/YYYY', value=None)
 
-# EXPORTAR PARA EXCEL
-# criar um buffer na memoria
-output = io.BytesIO()
-# salvar df filtrado como arquivo excel
-# with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-#     tabela_final[['Setor', 'Vagas', 'Preenchidas']].to_excel(writer, index=False, sheet_name='Setores')
-# retorna ao inicio do buffer
-output.seek(0)
-st.download_button(
-    "📤 Baixar Excel",
-    data = output,
-    file_name='Setores_Preenchidos.xlsx',
-    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-)
-st.markdown(
-    '<hr></hr>',unsafe_allow_html=True
-)
-
 # FILTROS
 if pautas:
     df_pautas = df_pautas[df_pautas['num_pauta'].isin(pautas)]
@@ -112,6 +94,7 @@ if data_inicio and data_final:
         (df_pautas['data_envio'].dt.date >= data_inicio) &
         (df_pautas['data_envio'].dt.date <= data_final)
     ]
+df_pautas['data_envio'] = pd.to_datetime(df_pautas['data_envio']).dt.strftime('%d/%m/%Y')
 
 if agentes:
     matriculas_selecionadas = [int(a.split(' - ')[0]) for a in agentes]
@@ -121,6 +104,36 @@ if agentes:
 if situacao:
     pautas_selecionadas = pautas_por_situacao(situacoes=situacao)
     df_pautas = df_pautas[df_pautas['num_pauta'].isin(pautas_selecionadas)]
+
+# EXPORTAR PARA EXCEL
+# criar um buffer na memoria
+output = io.BytesIO()
+# salvar df filtrado como arquivo excel
+with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    df_pautas[['num_pauta', 'data_envio', 'observacao']].to_excel(writer, index=False, sheet_name='Pautas')
+# retorna ao inicio do buffer
+output.seek(0)
+st.download_button(
+    "📤 Baixar Excel",
+    data = output,
+    file_name='Pautas.xlsx',
+    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+)
+st.markdown(
+    '<hr></hr>',unsafe_allow_html=True
+)
+
+
+
+# ALTERAR OS NOMES DAS COLUNAS DO DF
+df_pautas = df_pautas.rename(
+    columns={
+        'num_pauta': 'Nº Pauta',
+        'data_envio': 'Data de envio',
+        'observacao': 'Observação'
+    }
+)
+
 # DATAFRAME
-st.dataframe(df_pautas)
+st.dataframe(df_pautas[['Nº Pauta','Data de envio', 'Observação']])
 

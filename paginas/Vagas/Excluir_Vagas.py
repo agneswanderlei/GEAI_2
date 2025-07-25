@@ -74,6 +74,7 @@ if setores:
         if submite:
             df = buscar_dados()
             quantidade = df.value_counts()
+            print(setor in quantidade)
             if setor in quantidade:
                 st.error('Não é possível excluir setor pois há agentes cadastrado!')
             else:

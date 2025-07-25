@@ -31,11 +31,11 @@ pages = {
         'paginas\Pautas\Visualizar_Pautas.py',
 
     ],
-    'Relatórios': [
-        'paginas\Relatorios\Graficos_1.py',
-        'paginas\Relatorios\Graficos_2.py',
-        'paginas\Relatorios\Relatorio_1.py',
-        'paginas\Relatorios\Relatorio_2.py'
+    'Gráficos': [
+        'paginas\Graficos\Graficos_Agentes.py',
+        'paginas\Graficos\Graficos_2.py',
+        'paginas\Graficos\Relatorio_1.py',
+        'paginas\Graficos\Relatorio_2.py'
     ]
 }
 
