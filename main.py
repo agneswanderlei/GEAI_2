@@ -90,6 +90,7 @@ pages = {
         os.path.join('paginas','Graficos','Relatorio_2.py')
     ],
     'Usuários': [
+        os.path.join('paginas','Usuarios','Home_Usuarios.py'),
         os.path.join('paginas','Usuarios','Adicionar_Usuarios.py'),
         os.path.join('paginas','Usuarios','Editar_Perfil.py'),
         os.path.join('paginas','Usuarios','Editar_Senha.py'),
