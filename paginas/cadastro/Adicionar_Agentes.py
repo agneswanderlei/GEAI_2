@@ -1,14 +1,16 @@
 import streamlit as st
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from funcoes.funcoes_cadastro import inserir_agente, conectardb
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+# from funcoes.funcoes_cadastro import inserir_agente, conectardb
+from funcoes_cadastro import inserir_agente, conectardb
 import time
 import sqlite3
 from datetime import datetime
+import os
 st.set_page_config('Adicionar',layout='wide')
 
 def formulario_existe_ano(num_form, data_form):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     ano = data_form.year
     cursor.execute("""
@@ -20,7 +22,7 @@ def formulario_existe_ano(num_form, data_form):
     return resultado is not None
 
 def listar_setor():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         'SELECT * FROM Vagas'

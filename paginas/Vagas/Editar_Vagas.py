@@ -1,6 +1,5 @@
 import streamlit as st
 import os, sys
-import time
 import sqlite3
 from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
@@ -15,7 +14,7 @@ st.set_page_config('Editar Setor',layout='centered')
 
 
 def listar_setor():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Vagas')
     data = cursor.fetchall()

@@ -1,10 +1,18 @@
 import streamlit as st
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 import sqlite3
 import pandas as pd
 import io
 st.set_page_config('Início',layout='wide')
+from criar_tabelas import criar_tabela_agentes, criar_tabela_pautas, criar_tabela_vagas, criar_tabela_usuarios
+
+
+# criar tabelas
+criar_tabela_vagas()
+criar_tabela_pautas()
+criar_tabela_agentes()
+criar_tabela_usuarios()
 
 # definição de options
 options_cargo = [
@@ -70,7 +78,7 @@ pracas_cadastrados = 0
 vagas_pracas_preenchidas = 0
 
 def buscar_agentes():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute("SELECT data_form, num_form, matricula, nome, nome_guerra, cargo, quadro, setor, funcao, situacao_agente, situacao, codigo_agente, data_cadastro FROM Agentes")
     colunas = [desc[0] for desc in cursor.description] # nome das colunas
@@ -95,7 +103,7 @@ def buscar_agentes():
     return dados
 
 # consulta dados daas vagas na tabela
-cursor = sqlite3.connect('./db/Geai.db').cursor()
+cursor = sqlite3.connect(os.path.join('db','Geai.db')).cursor()
 cursor.execute("SELECT COUNT(*) FROM Agentes WHERE cargo IN ('CEL', 'TC', 'MAJ', 'CAP', '1º TEN', '2º TEN') AND situacao NOT IN ('DESCREDENCIADO')")
 oficiais_cadastrados = cursor.fetchall()[0][0]
 

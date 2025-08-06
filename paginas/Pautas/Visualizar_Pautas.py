@@ -105,4 +105,4 @@ observacao = st.text_area('Observação',height=400, value=dados_pautas_trat[2],
 
 # Botão salvar
 if st.button('Voltar'):
-    st.switch_page('paginas/Pautas/Home_Pautas.py')
+    st.switch_page(os.path.join('paginas','Pautas','Home_Pautas.py'))

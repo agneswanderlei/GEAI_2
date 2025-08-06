@@ -7,7 +7,7 @@ st.set_page_config('Gráficos dos Agentes', layout='wide')
 st.header('📊 Gráficos de Agentes')
 
 def carregar_dados():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     df = pd.read_sql_query("SELECT * FROM Agentes", conn)
     conn.close()
     return df

@@ -1,6 +1,6 @@
 import streamlit as st
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 import sqlite3
 import pandas as pd
 import io
@@ -8,7 +8,7 @@ st.set_page_config('Início',layout='centered')
 
 # Funções
 def listar_pautas():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Pautas')
     data = cursor.fetchall()
@@ -18,7 +18,7 @@ pautas = listar_pautas()
 ids_pautas = [p[0] for p in pautas]
 
 def listar_agentes():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT nome, matricula FROM Agentes')
     data = cursor.fetchall()
@@ -28,7 +28,7 @@ agentes = listar_agentes()
 ids_agentes = [f'{p[1]} - {p[0]}' for p in agentes]
 
 def buscar_dados():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -43,7 +43,7 @@ df_pautas = buscar_dados()
 
 # função para buscar pautas de agentes
 def pautas_por_agentes(matriculas):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         f"""
@@ -57,7 +57,7 @@ def pautas_por_agentes(matriculas):
     return pautas_r
 
 def pautas_por_situacao(situacoes):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         f"""

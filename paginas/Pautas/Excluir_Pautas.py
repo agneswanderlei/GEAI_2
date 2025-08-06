@@ -12,7 +12,7 @@ st.set_page_config('Excluir Pautas',layout='centered')
 criar_tabela_pautas()
 
 # Carregar dados dos agentes
-conn = sqlite3.connect('./db/Geai.db')
+conn = sqlite3.connect(os.path.join('db','Geai.db'))
 cursor = conn.cursor()
 cursor.execute(
     """
@@ -63,7 +63,7 @@ def deletar_msg(dados_pautas_trat):
     if st.button('✅ Sim, Excluir!', key='botao_confir_delete'):
         excluir_pauta(dados_pautas_trat[0])
         time.sleep(2)
-        st.switch_page('paginas/Pautas/Home_Pautas.py')
+        st.switch_page(os.path.join('paginas','Pautas','Home_Pautas.py'))
 
 
 # Iniciar o estado

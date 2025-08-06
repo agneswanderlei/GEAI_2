@@ -1,10 +1,11 @@
 import streamlit as st
 import sqlite3
 import time
+import os
 
 def criar_tabela_vagas():
 
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -23,7 +24,7 @@ def criar_tabela_vagas():
 def inserir_vagas(setor, vagas, observacao):
     try:
 
-        conn = sqlite3.connect('./db/Geai.db')
+        conn = sqlite3.connect(os.path.join('db','Geai.db'))
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -51,7 +52,7 @@ def inserir_vagas(setor, vagas, observacao):
 def atualizar_vagas(
         setor, vagas, observacao
 ):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """

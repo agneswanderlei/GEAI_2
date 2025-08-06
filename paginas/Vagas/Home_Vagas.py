@@ -1,6 +1,6 @@
 import streamlit as st
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import sqlite3
 import pandas as pd
 import io
@@ -13,7 +13,7 @@ options_status = [
     '✅ Vagas completas'
 ]
 def listar_setores():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Vagas')
     data = cursor.fetchall()
@@ -23,7 +23,7 @@ setores = listar_setores()
 ids = [s[0] for s in setores]
 
 def buscar_vagas():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute("SELECT setor, vagas, observacao, data_cadastro FROM Vagas")
     colunas = [desc[0] for desc in cursor.description]
@@ -33,7 +33,7 @@ def buscar_vagas():
     return df_vagas
 
 def contar_agentes_por_setor():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute("""
         SELECT setor, COUNT(*) as preenchidas

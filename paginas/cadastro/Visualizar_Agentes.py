@@ -1,5 +1,6 @@
 import streamlit as st
 import sqlite3
+import os
 st.set_page_config('Visualizar Agente',layout='wide')
 
 options_cargo = [
@@ -56,7 +57,7 @@ options_situacao_agente = [
 ]
 
 def listar_policiais():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Agentes')
     data = cursor.fetchall()
@@ -151,6 +152,7 @@ if policial:
 
     voltar = st.button('Voltar ao início')
     if voltar:
-        st.switch_page("paginas\cadastro\Home.py")
+        st.switch_page(os.path.join('paginas','cadastro','Home_Agentes.py'))
+        print(os.path.join('paginas','cadastro','Home_Agentes.py'))
 else:
     st.warning('Agente não encontrado')

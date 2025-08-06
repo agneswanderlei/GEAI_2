@@ -1,10 +1,10 @@
 import streamlit as st
 import sqlite3
-import time
+import os
 
 def criar_tabela_pautas():
 
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.executescript(
         """
@@ -30,7 +30,7 @@ def criar_tabela_pautas():
 def inserir_pautas(num_pauta, data_envio, observacao):
     try:
 
-        conn = sqlite3.connect('./db/Geai.db')
+        conn = sqlite3.connect(os.path.join('db','Geai.db'))
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -56,7 +56,7 @@ def inserir_pautas(num_pauta, data_envio, observacao):
 
 def inserir_agentes_pautas(num_pauta, matricula, situacao):
     try:
-        conn = sqlite3.connect('./db/Geai.db')
+        conn = sqlite3.connect(os.path.join('db','Geai.db'))
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -82,7 +82,7 @@ def inserir_agentes_pautas(num_pauta, matricula, situacao):
 
 def atualizar_pauta(num_pauta, nova_data_envio, nova_observacao):
     try:
-        conn = sqlite3.connect('./db/Geai.db')
+        conn = sqlite3.connect(os.path.join('db','Geai.db'))
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -102,7 +102,7 @@ def atualizar_pauta(num_pauta, nova_data_envio, nova_observacao):
 
 def atualizar_agentes_pauta(num_pauta, lista_agentes):
     try:
-        conn = sqlite3.connect('./db/Geai.db')
+        conn = sqlite3.connect(os.path.join('db','Geai.db'))
         cursor = conn.cursor()
 
         # Remover os agentes atualizados
@@ -131,7 +131,7 @@ def atualizar_agentes_pauta(num_pauta, lista_agentes):
 
 def excluir_pauta(num_pauta):
     try:
-        conn = sqlite3.connect('./db/Geai.db')
+        conn = sqlite3.connect(os.path.join('db','Geai.db'))
         cursor = conn.cursor()
         cursor.execute(
             """

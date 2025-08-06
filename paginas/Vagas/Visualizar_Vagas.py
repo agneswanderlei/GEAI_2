@@ -3,36 +3,13 @@ import os, sys
 import time
 import sqlite3
 from datetime import datetime
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from funcoes_vagas import atualizar_vagas
 
-st.set_page_config('Excluir Setor',layout='centered')
+st.set_page_config('Visualizar Setor',layout='centered')
 
 # funções
-def deletar_agentes(setorr):
-    conn = sqlite3.connect('./db/Geai.db')
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM Vagas WHERE setor = ?",(setorr[0],))
-    conn.commit()
-    conn.close()
-    st.success('Agente excluido com sucesso!',icon='✅')
-    time.sleep(1)
-    st.switch_page("paginas\Vagas\Home_Vagas.py")
-
-
-@st.dialog('Atenção')
-def deletar_msg(setorr):
-    st.write(f'Deseja Excluir o Setor?')
-    st.write(f'Setor: {setorr[0]}')
-    st.write(f'Vagas: {setorr[1]}')
-    st.markdown('<hr></hr>', unsafe_allow_html=True)
-    if st.button('✅ Sim, Excluir!', key='botao_confir_delete'):
-        deletar_agentes(setorr)
-
-
 
 def listar_setor():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Vagas')
     data = cursor.fetchall()
@@ -61,5 +38,5 @@ if setores:
         data_cadastro = datetime.now()
         submite = st.form_submit_button('Voltar')
         if submite:
-            st.switch_page('paginas\Vagas\Home_Vagas.py')
+            st.switch_page(os.path.join('paginas','Vagas','Home_Vagas.py'))
             

@@ -4,14 +4,12 @@ import time
 import sqlite3
 from datetime import datetime
 import pandas as pd
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from funcoes_vagas import atualizar_vagas
 
 st.set_page_config('Excluir Setor',layout='centered')
 
 # funções
 def deletar_agentes(setorr):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute("DELETE FROM Vagas WHERE setor = ?",(setorr[0],))
     conn.commit()
@@ -20,7 +18,7 @@ def deletar_agentes(setorr):
     time.sleep(1)
     st.switch_page("paginas\Vagas\Home_Vagas.py")
 def buscar_dados():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -45,7 +43,7 @@ def deletar_msg(setorr):
 
 
 def listar_setor():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Vagas')
     data = cursor.fetchall()

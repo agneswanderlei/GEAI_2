@@ -3,8 +3,8 @@ import os, sys
 import time
 import sqlite3
 from datetime import datetime
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from funcoes.funcoes_cadastro import atualizar_cadastro
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+from funcoes_cadastro import atualizar_cadastro
 st.set_page_config('Editar Agentes',layout='wide')
 
 # funções
@@ -65,14 +65,14 @@ options_situacao_agente = [
 
 
 def listar_policiais():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Agentes')
     data = cursor.fetchall()
     conn.close()
     return data
 def listar_setores():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM Vagas')
     data = cursor.fetchall()
@@ -177,6 +177,6 @@ if policial:
         st.toast('✅ Agente atualizado com sucesso!')
         st.session_state['matricula_default'] = ids[0]  # Define como primeira matrícula
         time.sleep(1)
-        st.switch_page("paginas\cadastro\Home_Agentes.py")
+        st.switch_page(os.path.join('paginas','cadastro','Home_Agentes.py'))
 else:
     st.warning('Agente não encontrado')

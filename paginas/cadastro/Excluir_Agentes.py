@@ -2,6 +2,7 @@ import streamlit as st
 import time
 import sqlite3
 import pandas as pd
+import os
 st.set_page_config('Excluir Agentes',layout='wide')
 
 options_cargo = [
@@ -58,14 +59,14 @@ options_situacao_agente = [
 ]
 
 def deletar_agentes(policial):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute("DELETE FROM Agentes WHERE matricula = ?",(policial[0],))
     conn.commit()
     conn.close()
     st.toast('Agente excluido com sucesso!',icon='✅')
     time.sleep(1)
-    st.switch_page("paginas\cadastro\Home_Agentes.py")
+    st.switch_page(os.path.join('paginas','cadastro','Home_Agentes.py'))
 
 
 def listar_policiais():
@@ -77,7 +78,7 @@ def listar_policiais():
     return data
 
 def buscar_agentes_pautas():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """

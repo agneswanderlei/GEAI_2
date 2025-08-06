@@ -12,7 +12,7 @@ st.set_page_config('Editar Pautas',layout='centered')
 criar_tabela_pautas()
 
 # Carregar dados dos agentes
-conn = sqlite3.connect('./db/Geai.db')
+conn = sqlite3.connect(os.path.join('db','Geai.db'))
 cursor = conn.cursor()
 cursor.execute(
     """
@@ -24,7 +24,7 @@ opcoes_agentes = [f"{matricula} - {nome}" for matricula,nome in dados_agentes]
 conn.close()
 # Buscar dados pautas
 def listar_pautas():
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -36,7 +36,7 @@ def listar_pautas():
     return dados_pautas
 
 def buscar_agentes_pautas(num_pauta):
-    conn = sqlite3.connect('./db/Geai.db')
+    conn = sqlite3.connect(os.path.join('db','Geai.db'))
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -124,4 +124,4 @@ if st.button('Atualizar'):
     if sucesso_agente and sucesso_pauta:
         st.success("✅ Pauta e agentes atualizados com sucesso!")
         time.sleep(2)
-        st.switch_page('paginas/Pautas/Home_Pautas.py')
+        st.switch_page(os.path.join('paginas','Pautas','Home_Pautas.py'))

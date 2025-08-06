@@ -11,7 +11,7 @@ st.set_page_config('Adicionar Pautas',layout='centered')
 #  Criar tabela caso nao exista
 criar_tabela_pautas()
 # Carregar dados dos agentes
-conn = sqlite3.connect('./db/Geai.db')
+conn = sqlite3.connect(os.path.join('db','Geai.db'))
 cursor = conn.cursor()
 cursor.execute(
     """
@@ -72,4 +72,4 @@ if st.button('Salvar'):
             st.toast("✅ Pauta e agentes salvos com sucesso!")
             time.sleep(2)
             st.session_state.agentes_pauta = []
-            st.switch_page('paginas\Pautas\Home_Pautas.py')
+            st.switch_page(os.path.join('paginas','Pautas','Home_Pautas.py'))
