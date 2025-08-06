@@ -85,9 +85,9 @@ pages = {
     ],
     'Gráficos': [
         os.path.join('paginas','Graficos','Graficos_Agentes.py'),
-        os.path.join('paginas','Graficos','Graficos_2.py'),
-        os.path.join('paginas','Graficos','Relatorio_1.py'),
-        os.path.join('paginas','Graficos','Relatorio_2.py')
+        # os.path.join('paginas','Graficos','Graficos_2.py'),
+        # os.path.join('paginas','Graficos','Relatorio_1.py'),
+        # os.path.join('paginas','Graficos','Relatorio_2.py')
     ],
     'Usuários': [
         os.path.join('paginas','Usuarios','Adicionar_Usuarios.py'),
