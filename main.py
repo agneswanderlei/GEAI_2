@@ -111,7 +111,7 @@ except stauth.exceptions.LoginError as e:
 if st.session_state.get('authentication_status'):
     perfil_usuario = credenciais['usernames'][st.session_state['username']]['perfil']
     if perfil_usuario == 'admin':
-        pg = st.navigation(pages, position='top', expanded=True)
+        pg = st.navigation(pages, position='sidebar', expanded=True)
         pg.run()
     else:
         pages = {
@@ -141,9 +141,9 @@ if st.session_state.get('authentication_status'):
             ],
             'Gráficos': [
                 os.path.join('paginas','Graficos','Graficos_Agentes.py'),
-                os.path.join('paginas','Graficos','Graficos_2.py'),
-                os.path.join('paginas','Graficos','Relatorio_1.py'),
-                os.path.join('paginas','Graficos','Relatorio_2.py')
+                # os.path.join('paginas','Graficos','Graficos_2.py'),
+                # os.path.join('paginas','Graficos','Relatorio_1.py'),
+                # os.path.join('paginas','Graficos','Relatorio_2.py')
             ],
             'Usuários': [
                 # os.path.join('paginas','Usuarios','Adicionar_Usuarios.py'),
@@ -153,7 +153,7 @@ if st.session_state.get('authentication_status'):
 
             ]
         }
-        pg = st.navigation(pages, position='top', expanded=True)
+        pg = st.navigation(pages, position='sidebar', expanded=True)
         pg.run()
     authenticator.logout('Sair',location='sidebar', use_container_width=False)
 elif st.session_state.get('authentication_status') is False:
