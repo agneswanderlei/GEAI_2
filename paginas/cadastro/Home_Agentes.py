@@ -143,7 +143,7 @@ with col6:
     card('Vagas Preenchidas', vagas_pracas_preenchidas,'#198754')
 st.markdown('<hr></hr>',unsafe_allow_html=True)
 policiais = buscar_agentes()
-ids = [p for p in policiais['Setor']]
+ids = list(set([p for p in policiais['Setor']]))
 
 st.title('Filtros')
 # filtros
