@@ -2,6 +2,7 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 import plotly.express as px
+import os
 
 st.set_page_config('Gráficos dos Agentes', layout='wide')
 st.header('📊 Gráficos de Agentes')
