@@ -111,12 +111,12 @@ def destacar_setor(row):
 
 # FILTROS
 if setor:
-    tabela_final = tabela_final[tabela_final['Status'].isin(setor)]
-if status:
-    tabela_final = tabela_final[tabela_final['Status'].isin(status)]
+    tabela_final = tabela_final[tabela_final['Setor'].isin(setor)]
 
 # 🧠 Aplica o estilo por linha
 dados_resumidos = tabela_final[['Setor', 'Vagas', 'Preenchidas', 'Status']]
+if status:
+    dados_resumidos = dados_resumidos[dados_resumidos['Status'].isin(status)]
 styled_df = dados_resumidos.style.apply(destacar_setor, axis=1)
 
 st.dataframe(styled_df, use_container_width=True)
